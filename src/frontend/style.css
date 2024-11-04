@@ -1,0 +1,177 @@
+body {
+    font-family: 'Roboto', sans-serif !important;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.mainscreen {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #FFF5E1; /* Fundo laranja claro */
+    color: #C65D1E; /* Laranja escuro */
+}
+
+.card {
+    width: 60rem;
+    margin: auto;
+    background: white;
+    border-radius: 1.5rem;
+    box-shadow: 4px 3px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: row;
+}
+
+.leftside {
+    background: #FF8C00; /* Laranja */
+    width: 25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-top-left-radius: 1.5rem;
+    border-bottom-left-radius: 1.5rem;
+}
+
+.product {
+    object-fit: cover;
+    width: 20em;
+    height: 20em;
+    border-radius: 100%;
+}
+
+.rightside {
+    background-color: #ffffff;
+    width: 35rem;
+    border-bottom-right-radius: 1.5rem;
+    border-top-right-radius: 1.5rem;
+    padding: 1rem 2rem 3rem 3rem;
+}
+
+p {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin: .8rem 0;
+}
+
+.inputbox {
+    color: #030303;
+    width: 100%;
+    padding: 0.5rem;
+    border: none;
+    border-bottom: 1.5px solid #FFA500; /* Laranja */
+    margin-bottom: 1rem;
+    border-radius: 0.3rem;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    outline: none;
+}
+
+.expcvv {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 0.6rem;
+}
+
+.expcvv_text {
+    padding-right: 1rem;
+}
+
+.expcvv_text2 {
+    padding: 0 1rem;
+}
+
+.button {
+    background: linear-gradient(135deg, #FFA500 0%, #FF4500 100%); /* Gradiente de laranja */
+    padding: 15px;
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-weight: 400;
+    font-size: 1.2rem;
+    margin-top: 10px;
+    width: 100%;
+    letter-spacing: .11rem;
+    outline: none;
+}
+
+.button:hover {
+    transform: scale(1.05) translateY(-3px);
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+@media only screen and (max-width: 1000px) {
+    .card {
+        flex-direction: column;
+        width: auto;
+    }
+
+    .leftside {
+        width: 100%;
+        border-top-right-radius: 0;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 0;
+        border-radius: 0;
+    }
+
+    .rightside {
+        width: auto;
+        border-bottom-left-radius: 1.5rem;
+        padding: 0.5rem 3rem 3rem 2rem;
+        border-radius: 0;
+    }
+}
+
+/* Estilos do Modal */
+.modal {
+    display: none; /* Escondido por padrão */
+    position: fixed; /* Fica na tela toda */
+    z-index: 1; /* Fica em cima de outros elementos */
+    left: 0;
+    top: 0;
+    width: 100%; /* Largura total */
+    height: 100%; /* Altura total */
+    overflow: auto; /* Ativa a rolagem se necessário */
+    background-color: rgb(0,0,0); /* Fundo preto com opacidade */
+    background-color: rgba(0,0,0,0.4); /* Fundo preto com opacidade */
+}
+
+/* Estilos do Modal */
+.modal {
+    display: none; /* Oculta o modal por padrão */
+    position: fixed; /* Fica fixo na tela */
+    z-index: 1000; /* Certifique-se de que o modal fique acima de outros elementos */
+    left: 0;
+    top: 0;
+    width: 100%; /* Largura total */
+    height: 100%; /* Altura total */
+    overflow: auto; /* Permite rolagem se necessário */
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo semitransparente */
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto; /* Centraliza verticalmente */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Largura do modal */
+    max-width: 500px; /* Largura máxima do modal */
+    border-radius: 8px; /* Cantos arredondados */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
