@@ -1,6 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Unimenu
 =======
+=======
+>>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
@@ -100,4 +103,7 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+<<<<<<< HEAD
 >>>>>>> c0afe41 (unimenu com todos os cruds das entidades e stripe payments com frontend)
+=======
+>>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17

@@ -6,7 +6,10 @@ import { CreateMenuItemDto } from './dto/menuItem.dto';
 export class MenuItemController {
   constructor(private readonly menuItemService: MenuItemService) {}
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
   @Post()
   async create(@Body() createMenuItemDto: CreateMenuItemDto) {
     return await this.menuItemService.create(createMenuItemDto);

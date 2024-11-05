@@ -27,6 +27,10 @@ export class MenuItem {
   @ManyToOne(() => Store, store => store.menuItems)
   store: Store;
 
+<<<<<<< HEAD
   @OneToMany(() => ProductOrder, (productOrder) => productOrder.menuItem) // Relacionamento com ProductOrder
+=======
+  @OneToMany(() => ProductOrder, productOrder => productOrder.menuItem) // Relacionamento com ProductOrder
+>>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
   productOrders: ProductOrder[];
  }

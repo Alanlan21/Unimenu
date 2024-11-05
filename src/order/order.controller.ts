@@ -7,6 +7,7 @@ import { Order } from './order.entity';
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
+<<<<<<< HEAD
   // Método para adicionar um item ao pedido
   @Post(':id_cliente/add-item')
   async addItemToOrder(
@@ -25,24 +26,40 @@ export class OrderController {
   }
 
   // Método para listar todos os pedidos
+=======
+  @Post()
+  async create(@Body() createOrderDto: CreateOrderDto): Promise<Order> {
+    return this.orderService.create(createOrderDto);
+  }
+
+>>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
   @Get()
   async findAll(): Promise<Order[]> {
     return this.orderService.findAll();
   }
 
+<<<<<<< HEAD
   // Método para buscar um pedido por ID
+=======
+>>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<Order> {
     return this.orderService.findOne(id);
   }
 
+<<<<<<< HEAD
   // Método para atualizar um pedido
+=======
+>>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
   @Patch(':id')
   async update(@Param('id') id: number, @Body() updateData: Partial<Order>): Promise<Order> {
     return this.orderService.update(id, updateData);
   }
 
+<<<<<<< HEAD
   // Método para remover um pedido
+=======
+>>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
   @Delete(':id')
   async remove(@Param('id') id: number): Promise<void> {
     return this.orderService.remove(id);
