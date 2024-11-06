@@ -32,7 +32,7 @@
 
             // Atualiza o subtotal e o total
             document.getElementById('subtotal').textContent = 'R$ ' + subtotal.toFixed(2);
-            document.getElementById('total').textContent = subtotal.toFixed(2); // Atualiza o total
+            document.getElementById('total').textContent = 'R$ ' + subtotal.toFixed(2); // Atualiza o total
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -105,9 +105,9 @@
                                                     </div>
                                                 </div>
                                                 <div class="d-flex flex-row align-items-center">
-                                                    <input type="number" class="form-control quantity-input" value="2" min="1" onchange="updateTotal()" style="width: 60px; margin-right: 10px;">
+                                                    <input type="number" class="form-control quantity-input" value="1" min="1" onchange="updateTotal()" style="width: 60px; margin-right: 10px;">
                                                     <div style="width: 110px;">
-                                                        <h5 class="mb-0 item-total">R$ 23.80</h5> <!-- Preço total do item -->
+                                                        <h5 class="mb-0 item-total">R$ 11.90</h5> <!-- Preço total do item -->
                                                     </div>
                                                     <a href="#!" style="color: #cecece;"><i class="fas fa-trash-alt"></i></a>
                                                 </div>
@@ -156,7 +156,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="d-flex flex-row align-items-center">
-                                                    <input type="number" class="form-control quantity-input" value="1" min="1" onchange="updateTotal()" style="width: 60px; margin-right: 10px;">
+                                                    <input type="number" class="form-control quantity-input" value="2" min="1" onchange="updateTotal()" style="width: 60px; margin-right: 10px;">
                                                     <div style="width: 110px;">
                                                         <h5 class="mb-0 item-total">R$ 10.90</h5> <!-- Preço total do item -->
                                                     </div>
@@ -182,7 +182,7 @@
                                             </div>
                                             <div class="d-flex justify-content-between mb-2">
                                                 <h6 class="text-muted">Total</h6>
-                                                <h6 id="total">R$ 0.00</h6>
+                                                <h6 id="total">R$ 46.60</h6>
                                             </div>
                                             <button type="button" class="btn btn-warning custom-button">Finalizar Pedido</button>
                                             <hr>

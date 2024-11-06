@@ -6,7 +6,6 @@
     <title>Checkout - Unimenu Stripe</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://js.stripe.com/v3/"></script>
-<<<<<<< HEAD
     <style>
         #payment-message {
             color: red;
@@ -44,74 +43,44 @@
             cursor: pointer;
         }
     </style>
-=======
->>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
 </head>
 <body>
     <div class="mainscreen">
         <div class="card">
             <div class="leftside">
-<<<<<<< HEAD
                 <img src="https://i.ibb.co/dcbvbxD/unimenu.jpg" class="product" alt="Unimenu Logo"/>
-=======
-                <img
-                    src="https://i.ibb.co/dcbvbxD/unimenu.jpg"
-                    class="product"
-                    alt="Shoes"
-                />
->>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
             </div>
             <div class="rightside">
                 <form id="payment-form">
                     <h1>Checkout</h1>
-<<<<<<< HEAD
                     <p>Valor do Pagamento</p>
                     <p>Total: <span id="total-display">R$ 0.00</span></p>
 
                     <h2>Informações de Pagamento</h2>
-
-=======
-                    <h2>Informações de Pagamento</h2>
->>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
                     <p>Nome do Titular</p>
                     <input type="text" class="inputbox" name="name" required />
 
                     <p>Número do Cartão</p>
-<<<<<<< HEAD
                     <div id="card-element" class="inputbox"></div>
-=======
-                    <div id="card-element" class="inputbox"></div> <!-- Stripe Card Element -->
->>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
 
                     <p>Tipo de Cartão</p>
                     <select class="inputbox" name="card_type" id="card_type" required>
                         <option value="">--Selecione um Tipo de Cartão--</option>
                         <option value="Visa">Visa</option>
-<<<<<<< HEAD
-                        <option value="RuPay">Nubank</option>
-=======
                         <option value="RuPay">RuPay</option>
->>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
                         <option value="MasterCard">MasterCard</option>
                     </select>
 
                     <button type="submit" class="button">Checkout</button>
                     <div id="payment-message"></div>
                 </form>
-<<<<<<< HEAD
                 <input type="hidden" id="amount" value="0"> <!-- Campo oculto para o valor -->
-=======
->>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
             </div>
         </div>
     </div>
 
     <!-- Modal de Sucesso -->
-<<<<<<< HEAD
     <div id="success-modal" class="modal">
-=======
-    <div id="success-modal" class="modal" style="display:none;">
->>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
         <div class="modal-content">
             <span class="close" id="close-modal">&times;</span>
             <h2>Pagamento Realizado com Sucesso!</h2>
@@ -124,16 +93,11 @@
         const elements = stripe.elements();
         const cardElement = elements.create("card");
         cardElement.mount("#card-element");
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
         const form = document.getElementById("payment-form");
         const successModal = document.getElementById("success-modal");
         const closeModal = document.getElementById("close-modal");
         const messageDiv = document.getElementById("payment-message");
-<<<<<<< HEAD
 
         function getTotalAmount() {
             const params = new URLSearchParams(window.location.search);
@@ -164,47 +128,20 @@
                 },
                 body: JSON.stringify({ amount: amount, currency: "usd" }),
             });
-            console.log("Amount being sent:", amount);
 
-=======
-    
-        form.addEventListener("submit", async (event) => {
-            event.preventDefault();
-    
-            const response = await fetch("http://localhost:3000/pagamento", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ amount: 500, currency: "usd" }),
-});
-
-    
->>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
             if (!response.ok) {
                 messageDiv.textContent = "Erro na requisição: " + response.statusText;
                 return;
             }
-<<<<<<< HEAD
 
             const { client_secret } = await response.json();
 
             const { paymentIntent, error } = await stripe.confirmCardPayment(client_secret, {
-=======
-    
-            const { client_secret } = await response.json(); // Corrigido aqui
-    
-            const { paymentIntent, error } = await stripe.confirmCardPayment(client_secret, { // Corrigido aqui
->>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
                 payment_method: {
                     card: cardElement,
                 }
             });
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
             if (error) {
                 messageDiv.textContent = `Erro: ${error.message}`;
             } else if (paymentIntent.status === 'succeeded') {
@@ -212,20 +149,12 @@
                 successModal.style.display = "block"; // Exibe o modal
             }
         });
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
         // Fecha o modal quando o usuário clica no "x"
         closeModal.onclick = function() {
             successModal.style.display = "none";
         }
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
         // Fecha o modal se o usuário clicar fora da área do modal
         window.onclick = function(event) {
             if (event.target === successModal) {

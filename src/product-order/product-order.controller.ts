@@ -7,11 +7,8 @@ import { CreateProductOrderDto } from './dto/product-order.dto';
 export class ProductOrderController {
   constructor(private readonly productOrderService: ProductOrderService) {}
 
-<<<<<<< HEAD
   
 
-=======
->>>>>>> c0afe41a7bdc310fe963ab6d6f3e90ca605bfd17
   @Post()
   async create(@Body() createProductOrderDto: CreateProductOrderDto): Promise<ProductOrder> {
     return this.productOrderService.create(createProductOrderDto);
