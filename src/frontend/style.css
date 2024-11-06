@@ -13,6 +13,42 @@ body {
     background-color: #FFF5E1; /* Fundo laranja claro */
     color: #C65D1E; /* Laranja escuro */
 }
+/* Modal de Sucesso */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); /* Deixar fundo sem opacidade total */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%; /* Ajustado para ficar proporcional */
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.1); /* Adiciona uma sombra sutil */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
 
 .card {
     width: 60rem;

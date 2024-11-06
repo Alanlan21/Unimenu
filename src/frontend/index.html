@@ -93,55 +93,59 @@
         const elements = stripe.elements();
         const cardElement = elements.create("card");
         cardElement.mount("#card-element");
-
+    
         const form = document.getElementById("payment-form");
         const successModal = document.getElementById("success-modal");
         const closeModal = document.getElementById("close-modal");
         const messageDiv = document.getElementById("payment-message");
-
+    
         function getTotalAmount() {
             const params = new URLSearchParams(window.location.search);
             const totalAmount = params.get('total');
+            console.log('Total obtido da URL:', totalAmount); // Verificação
             return totalAmount ? parseFloat(totalAmount) : 0; // Retorna 0 se não houver valor
         }
-
+    
         // Exibir o valor total no campo apenas leitura
         const totalAmount = getTotalAmount();
-        document.getElementById("total-display").textContent = `R$ ${totalAmount.toFixed(2)}`; // Formata o valor para 2 casas decimais
-        document.getElementById("amount").value = totalAmount.toFixed(2); // Preenche o campo oculto
-
+        if (isNaN(totalAmount) || totalAmount <= 0) {
+            messageDiv.textContent = "Erro: Valor total inválido.";
+        } else {
+            document.getElementById("total-display").textContent = `R$ ${totalAmount.toFixed(2)}`; // Formata o valor para 2 casas decimais
+            document.getElementById("amount").value = totalAmount.toFixed(2); // Preenche o campo oculto
+        }
+    
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
-
-            const amount = Math.round(parseFloat(document.getElementById("amount").value) * 100); // Converte o valor para centavos
-
-            // Verifica se o valor foi preenchido corretamente
-            if (!amount || amount <= 0) {
+    
+            const amount = parseFloat(document.getElementById("amount").value);
+            if (isNaN(amount) || amount <= 0) {
                 messageDiv.textContent = "Por favor, insira um valor de pagamento válido.";
                 return;
             }
-
+            const amountInCents = Math.round(amount * 100); // Converte para centavos   
+    
             const response = await fetch("http://localhost:3000/pagamento", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ amount: amount, currency: "usd" }),
+                body: JSON.stringify({ amount: amountInCents, currency: "usd" }), // Corrige para enviar centavos
             });
-
+    
             if (!response.ok) {
                 messageDiv.textContent = "Erro na requisição: " + response.statusText;
                 return;
             }
-
+    
             const { client_secret } = await response.json();
-
+    
             const { paymentIntent, error } = await stripe.confirmCardPayment(client_secret, {
                 payment_method: {
                     card: cardElement,
                 }
             });
-
+    
             if (error) {
                 messageDiv.textContent = `Erro: ${error.message}`;
             } else if (paymentIntent.status === 'succeeded') {
@@ -149,12 +153,12 @@
                 successModal.style.display = "block"; // Exibe o modal
             }
         });
-
+    
         // Fecha o modal quando o usuário clica no "x"
         closeModal.onclick = function() {
             successModal.style.display = "none";
         }
-
+    
         // Fecha o modal se o usuário clicar fora da área do modal
         window.onclick = function(event) {
             if (event.target === successModal) {
@@ -162,5 +166,7 @@
             }
         }
     </script>
+    
+    
 </body>
 </html>

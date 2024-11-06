@@ -19,42 +19,27 @@
         function updateTotal() {
             const items = document.querySelectorAll('.cart-item');
             let subtotal = 0;
-
+    
             items.forEach(item => {
                 const quantity = parseInt(item.querySelector('.quantity-input').value);
                 const price = parseFloat(item.getAttribute('data-price'));
                 const totalItemPrice = quantity * price;
                 subtotal += totalItemPrice;
-
+    
                 // Atualiza o preço total do item
                 item.querySelector('.item-total').textContent = 'R$ ' + totalItemPrice.toFixed(2);
             });
-
+    
             // Atualiza o subtotal e o total
             document.getElementById('subtotal').textContent = 'R$ ' + subtotal.toFixed(2);
-            document.getElementById('total').textContent = 'R$ ' + subtotal.toFixed(2); // Atualiza o total
+            document.getElementById('total').textContent = subtotal.toFixed(2); // Apenas o número
         }
-
+    
         document.addEventListener('DOMContentLoaded', () => {
-            // Obtém os parâmetros da URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const total = urlParams.get('total');
-
-            // Converte o total para um número
-            const totalValue = parseFloat(total);
-
-            if (!isNaN(totalValue)) {
-                // Atualiza o campo do total na página
-                document.getElementById('total-display').textContent = 'R$ ' + totalValue.toFixed(2);
-            } else {
-                // Se totalValue não for um número, exibe uma mensagem de erro ou define um valor padrão
-                document.getElementById('total-display').textContent = 'Erro ao carregar total';
-            }
-
             // Atualiza o total ao carregar a página
             updateTotal();
         });
-
+    
         // Adiciona evento de clique ao botão de pagamento
         window.onload = function() {
             const checkoutButton = document.querySelector('.custom-button');
@@ -64,6 +49,7 @@
             });
         };
     </script>
+    
 </head>
 <body>
     <section class="h-100 h-custom" style="background-color: #eee;">
@@ -182,7 +168,7 @@
                                             </div>
                                             <div class="d-flex justify-content-between mb-2">
                                                 <h6 class="text-muted">Total</h6>
-                                                <h6 id="total">R$ 46.60</h6>
+                                                <h6 id="total">R$ 0.00</h6>
                                             </div>
                                             <button type="button" class="btn btn-warning custom-button">Finalizar Pedido</button>
                                             <hr>
