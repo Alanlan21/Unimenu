@@ -73,11 +73,15 @@ async addItemToOrder(idUser: number, menuItemId: number, quantidade: number) {
 
   // Método para buscar um pedido por ID
   async findOne(id: number): Promise<Order> {
-    return this.orderRepository.findOne({
+    const order =  await this.orderRepository.findOne({
       where: { id },
       relations: ['user', 'productOrders', 'productOrders.menuItem'],
     });
-  }
+      if (!order) {
+        throw new NotFoundException("Pedido não encontrado")
+        }
+        return order;
+   }
 
   // Método para atualizar o pedido
   async update(id: number, updateData: Partial<Order>): Promise<Order> {

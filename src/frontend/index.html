@@ -90,9 +90,9 @@
 
     <script>
         const stripe = Stripe("pk_test_51Q5UHjJvaS5rJye8xiZaLT1WvrfLeEy9IWeSoVuLC1pHSbQvIlN8BpR7bRr9twD5HQ0c1TcWCcC3cTixSMJTsDst00t9tO7X0E");
-        const elements = stripe.elements();
+        const elements = stripe.elements(); // campo de inserção de dados do cartão
         const cardElement = elements.create("card");
-        cardElement.mount("#card-element");
+        cardElement.mount("#card-element"); //inserção no no elemento html
     
         const form = document.getElementById("payment-form");
         const successModal = document.getElementById("success-modal");

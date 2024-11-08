@@ -18,7 +18,7 @@ export class StoreService {
   async create(createStoreDto: CreateStoreDto): Promise<Store> {
     const owner = await this.ownerRepository.findOne({ where: { id: createStoreDto.ownerId } });
     if (!owner) {
-      throw new NotFoundException('Owner not found');
+      throw new NotFoundException('Proprietário não encontrado');
     }
 
     const store = this.storeRepository.create({
@@ -33,9 +33,11 @@ export class StoreService {
     return await this.storeRepository.find();
   }
 
-  async findOne(id: number): Promise<Store> {
-    return await this.storeRepository.findOne({ where: { id } });
-  }
+ async findOne(id: number): Promise<Store> { 
+  const store = await this.storeRepository.findOne({ 
+    where: { id } });
+    relations: ['menuItems', 'owner'] 
+  if (!store) { throw new NotFoundException('Restaurante não encontrado'); } return store; }
 
   async update(id: number, updateData: Partial<Store>): Promise<Store> {
     await this.storeRepository.update(id, updateData);

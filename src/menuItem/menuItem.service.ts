@@ -34,7 +34,13 @@ export class MenuItemService {
   }
 
   async findOne(id: number): Promise<MenuItem> {
-    return await this.menuItemRepository.findOne({ where: { id } });
+     const menuItem = this.menuItemRepository.findOne({ 
+      where: { id } });
+      relations: ['store', 'productOrders']
+    if (!menuItem) {
+      throw new Error("Item não foi encontrado")
+    }
+    return menuItem;
   }
 
   async update(id: number, updateData: Partial<MenuItem>): Promise<MenuItem> {
