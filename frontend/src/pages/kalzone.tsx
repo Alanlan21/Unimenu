@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Header from "../components/Navbar";
+import Header from "../components/Header";
 import { RestaurantHeader } from "../components/dashboard/RestaurantHeader";
 import { MenuSection } from "../components/dashboard/MenuSection";
 import { ItemModal } from "../components/dashboard/ItemModal";

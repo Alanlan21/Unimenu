@@ -16,7 +16,7 @@ const StoreGrid: React.FC<StoreGridProps> = ({ stores }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
       {stores.map((store) => (
-        <StoreCard key={store.id} store={store} />
+        <StoreCard key={store.id} name={store.name} logoUrl={store.logoUrl} isOpen={store.isOpen} id={0} />
       ))}
     </div>
   );

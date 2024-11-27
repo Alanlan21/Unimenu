@@ -1,8 +1,17 @@
 export interface CartItem {
-    id: number;
-    name: string;
-    description: string;
-    price: number; // Preço do item
-    imageUrl?: string; // URL da imagem do item
-    quantity: number; // Quantidade no carrinho
-  }
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  imageUrl?: string;
+}
+
+export interface CartStore {
+  items: CartItem[];
+  addItem: (item: CartItem) => void;
+  removeItem: (id: number) => void;
+  updateQuantity: (id: number, quantity: number) => void;
+  clearCart: () => void;
+  getTotal: () => number;
+}

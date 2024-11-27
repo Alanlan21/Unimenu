@@ -1,7 +1,8 @@
+import React, { useState } from 'react';
 import { ShoppingCart, User, Search } from 'lucide-react';
-import CartModal from './CartModal.tsx';
-import { useCart } from '../hooks/useCart.ts';
-import { useState } from 'react';
+import CartModal from './CartModal';
+import { useCart } from '../hooks/useCart';
+
 export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { items, updateQuantity, removeItem } = useCart();
@@ -15,10 +16,10 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-8">
-              <img src="/unimenu_logo.png" alt="Unimenu Logo" className="h-23" />
+              <img src="/unimenu_logo.png" alt="Unimenu Logo" className="h-15" />
               <nav className="hidden md:flex space-x-6">
                 <a href="/" className="text-orange-500 font-medium">Início</a>
-                <a href="/estabelecimentos" className="text-gray-600 hover:text-orange-500">Estabelecimentos</a>
+                <a href="/dashboard" className="text-gray-600 hover:text-orange-500">Estabelecimentos</a>
                 <a href="/pedidos" className="text-gray-600 hover:text-orange-500">Pedidos</a>
               </nav>
             </div>

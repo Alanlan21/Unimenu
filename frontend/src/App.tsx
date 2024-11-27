@@ -12,8 +12,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/register" element={<UserRegistration />} />{" "}
-        <Route path="/kalzone" element={<Kalzone />} />{" "}
-        {/* <Route path="/modal" element={<CartModalTest />} />{" "} */}
+        <Route path="/minikalzone" element={<Kalzone />} />{" "}
         <Route path="/dashboard" element={<Dashboard />} />{" "}
         <Route path="/login" element={<Login />} />{" "}
       </Routes>

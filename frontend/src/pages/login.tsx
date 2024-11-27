@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { User, Lock } from "lucide-react";
+import { useGoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 
 export default function Login() {
   const [credentials, setCredentials] = useState({
@@ -8,6 +10,48 @@ export default function Login() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleGoogleSuccess = async (tokenResponse: any) => {
+    try {
+      // Obtém os dados do usuário do Google
+      const userInfo = await axios.get(
+        'https://www.googleapis.com/oauth2/v3/userinfo',
+        {
+          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+        }
+      );
+
+      // Envia os dados para seu backend
+      const response = await fetch("http://localhost:3000/users/google-login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: tokenResponse.access_token,
+          userData: userInfo.data,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro na autenticação com Google");
+      }
+
+      const data = await response.json();
+      localStorage.setItem("userToken", data.access_token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      window.location.href = "/dashboard";
+    } catch (error) {
+      console.error("Google login error:", error);
+      setError("Erro ao fazer login com Google");
+    }
+  };
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: handleGoogleSuccess,
+    onError: () => setError("Erro ao fazer login com Google"),
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -74,13 +118,19 @@ export default function Login() {
           <p className="text-center text-gray-600 mb-8">
             Novo aqui? Cadastre-se agora mesmo.
           </p>
-          <button className="w-full mb-6 px-6 py-3 border-2 border-[#FF6B00] text-[#FF6B00] rounded-full hover:bg-[#FF6B00] hover:text-white transition-colors">
+          <button 
+            onClick={() => window.location.href = '/register'}
+            className="w-full mb-6 px-6 py-3 border-2 border-[#FF6B00] text-[#FF6B00] rounded-full hover:bg-[#FF6B00] hover:text-white transition-colors"
+          >
             Cadastre-se
           </button>
           <div className="text-center">
             <p className="text-gray-400 mb-4">ou cadastre-se com</p>
             <div className="space-y-3">
-              <button className="w-full flex items-center justify-center gap-2 bg-[#4285F4] text-white px-6 py-3 rounded-full hover:bg-[#3367D6] transition-colors">
+              <button 
+                onClick={() => googleLogin()}
+                className="w-full flex items-center justify-center gap-2 bg-[#4285F4] text-white px-6 py-3 rounded-full hover:bg-[#3367D6] transition-colors"
+              >
                 <img
                   src="https://www.google.com/favicon.ico"
                   alt="Google"
@@ -88,10 +138,6 @@ export default function Login() {
                 />
                 Sua conta Google
               </button>
-              {/* <button className="w-full flex items-center justify-center gap-2 bg-black text-white px-6 py-3 rounded-full hover:bg-gray-800 transition-colors">
-                <Apple className="w-5 h-5" />
-                Login para funcionários
-              </button> */}
             </div>
           </div>
         </div>
@@ -150,7 +196,10 @@ export default function Login() {
           <div className="mt-8">
             <div className="text-center text-white mb-4">ou</div>
             <div className="space-y-3">
-              <button className="w-full flex items-center justify-center gap-2 bg-[#4285F4] text-white px-6 py-3 rounded-full hover:bg-[#3367D6] transition-colors">
+              <button 
+                onClick={() => googleLogin()}
+                className="w-full flex items-center justify-center gap-2 bg-[#4285F4] text-white px-6 py-3 rounded-full hover:bg-[#3367D6] transition-colors"
+              >
                 <img
                   src="https://www.google.com/favicon.ico"
                   alt="Google"
