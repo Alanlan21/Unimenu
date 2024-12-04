@@ -1,60 +1,42 @@
-// Restaurant
-export interface Restaurant {
-  id: string;
-  name: string;
-  logo: string;
-  rating: number;
-  isOpen: boolean;
-  openingHours: {
-    [key: string]: { // day of week
-      open: string;  // HH:mm format
-      close: string; // HH:mm format
-    };
-  };
-  address: {
-    street: string;
-    number: string;
-    complement?: string;
-    neighborhood: string;
-    city: string;
-    state: string;
-    zipCode: string;
-  };
+import { MenuItem } from '../types/MenuItem';
+
+export interface CreateOrderDTO {
+  order_number: number;
+  order_date: Date;
+  order_status: string;
+  customer_id: number;
 }
 
-// Featured Items
-export interface FeaturedItem {
-  id: string;
-  name: string;
-  description: string;
-  image: string;
-  price: number;
-  category: string;
-  ingredients: string[];
-  allergens?: string[];
-  nutritionalInfo?: {
-    calories: number;
-    protein: number;
-    carbs: number;
-    fats: number;
+export interface Order {
+  id: number;
+  order_number: number;
+  order_date: Date;
+  status: string;
+  user: {
+    id: number;
   };
+  productOrders: ProductOrder[];
+  payments: Payment[];
 }
 
-// Promotions
-export interface Promotion {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  image: string;
-  startDate: string;    // ISO date string
-  endDate: string;      // ISO date string
-  isActive: boolean;
-  items: {
-    itemId: string;
-    quantity: number;
-  }[];
-  conditions?: string[];
-  maxPerCustomer?: number;
-  validDays?: number[]; // 0-6, where 0 is Sunday
+export interface ProductOrder {
+  id: number;
+  quantity: number;
+  menuItem: MenuItem;
+  order: Order;
+}
+
+export interface Payment {
+  id: number;
+  amount: number;
+  status: string;
+  paymentDate: Date;
+  order: Order;
+}
+
+export interface CreatePaymentDTO {
+  id: number;
+  value: number;
+  orderId: number;
+  PaymentMethodId: number;
 }

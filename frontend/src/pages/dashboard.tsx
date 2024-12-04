@@ -17,7 +17,7 @@ export default function Dashboard() {
     {
       id: 2,
       name: "Top's",
-      logoUrl: "https://source.unsplash.com/800x600/?cafe,food",
+      logoUrl: "tops.jpg",
       isOpen: true,
     },
     { id: 3, name: "Bebelu", logoUrl: "/bebelu.png", isOpen: true },
@@ -36,7 +36,7 @@ export default function Dashboard() {
     {
       id: 6,
       name: "Hand full",
-      logoUrl: "https://source.unsplash.com/800x600/?sandwich",
+      logoUrl: "/handfull.jpg",
       isOpen: true,
     },
     { id: 7, name: "Go Coffee", logoUrl: "/gocofee.png", isOpen: false },

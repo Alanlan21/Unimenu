@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ShoppingCart, User, Search } from 'lucide-react';
 import CartModal from './CartModal';
 import { useCart } from '../hooks/useCart';
@@ -7,8 +7,9 @@ export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { items, updateQuantity, removeItem } = useCart();
 
-  const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
-  const cartTotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  // Memoizing cart total calculations to optimize performance
+  const cartItemsCount = useMemo(() => items.reduce((sum, item) => sum + item.quantity, 0), [items]);
+  const cartTotal = useMemo(() => items.reduce((sum, item) => sum + (item.price * item.quantity), 0), [items]);
 
   return (
     <>
@@ -31,6 +32,7 @@ export default function Header() {
                   type="text"
                   placeholder="Busque por item ou loja"
                   className="w-full pl-10 pr-4 py-2 bg-[#FFF8EC] rounded-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  aria-label="Buscar por item ou loja"
                 />
               </div>
 
@@ -40,6 +42,7 @@ export default function Header() {
                   <button 
                     onClick={() => setIsCartOpen(true)} 
                     className="relative"
+                    aria-label="Abrir carrinho"
                   >
                     <ShoppingCart className="h-6 w-6" />
                     {cartItemsCount > 0 && (
@@ -49,7 +52,7 @@ export default function Header() {
                     )}
                   </button>
                 </div>
-                <a href="/profile" className="flex items-center text-gray-600 hover:text-orange-500">
+                <a href="/profile" className="flex items-center text-gray-600 hover:text-orange-500" aria-label="Ir para minha conta">
                   <User className="h-6 w-6" />
                   <span className="ml-2">Minha conta</span>
                 </a>
@@ -59,12 +62,14 @@ export default function Header() {
         </div>
       </header>
 
+      {/* Passando cartTotal para o CartModal */}
       <CartModal
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         items={items}
         onUpdateQuantity={updateQuantity}
         onRemoveItem={removeItem}
+        cartTotal={cartTotal} // Passando o valor total
       />
     </>
   );

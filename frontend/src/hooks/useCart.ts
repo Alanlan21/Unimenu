@@ -22,7 +22,10 @@ export const useCart = create<CartStore>((set, get) => ({
               ? { ...item, quantity: item.quantity + newItem.quantity }
               : item
           )
-        : [...state.items, newItem];
+        : [...state.items, { 
+            ...newItem, 
+            menuItemId: newItem.id  // Explicitly set menuItemId to be the same as id
+          }];
       
       localStorage.setItem('cart', JSON.stringify(updatedItems));
       return { items: updatedItems };

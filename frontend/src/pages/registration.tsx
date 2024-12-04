@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Apple,
   User,
   Lock,
   Mail,
@@ -40,8 +39,7 @@ export default function Register() {
     setError(null);
 
     try {
-      console.log("Dados enviados:", formData);
-      const response = await fetch("http://localhost:3000/users/register", {
+      const response = await fetch("http://localhost:3000/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -70,7 +68,7 @@ export default function Register() {
         <div className="md:w-1/2 p-8 md:p-12">
           <div className="flex justify-center">
             <img
-              src="/unimenu-logo.png"
+              src="/unimenu_logo.png"
               alt="Unimenu Logo"
               className="w-32 mb-8"
             />
@@ -83,7 +81,9 @@ export default function Register() {
           <p className="text-center text-gray-600 mb-8">
             Entre com sua conta para aproveitar todos os recursos.
           </p>
-          <button className="w-full mb-6 px-6 py-3 border-2 border-[#FF6B00] text-[#FF6B00] rounded-full hover:bg-[#FF6B00] hover:text-white transition-colors">
+          <button
+          onClick={() => (window.location.href = "/login")} 
+          className="w-full mb-6 px-6 py-3 border-2 border-[#FF6B00] text-[#FF6B00] rounded-full hover:bg-[#FF6B00] hover:text-white transition-colors">
             Fazer Login
           </button>
           <div className="text-center">
@@ -97,10 +97,10 @@ export default function Register() {
                 />
                 Sua conta Google
               </button>
-              <button className="w-full flex items-center justify-center gap-2 bg-black text-white px-6 py-3 rounded-full hover:bg-gray-800 transition-colors">
+              {/* <button className="w-full flex items-center justify-center gap-2 bg-black text-white px-6 py-3 rounded-full hover:bg-gray-800 transition-colors">
                 <Apple className="w-5 h-5" />
                 Sua conta Apple
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

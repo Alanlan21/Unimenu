@@ -9,7 +9,7 @@ interface StoreProps {
   isOpen: boolean;
 }
 
-export default function StoreCard({ name, logoUrl, isOpen }: StoreProps) {
+export default function StoreCard({ name, logoUrl, isOpen }: Readonly<StoreProps>) {
   const navigate = useNavigate();
 
   const handleCardClick = () => {

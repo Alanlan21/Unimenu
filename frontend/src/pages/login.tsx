@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { User, Lock } from "lucide-react";
-import { useGoogleLogin } from '@react-oauth/google';
-import axios from 'axios';
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 
 export default function Login() {
   const [credentials, setCredentials] = useState({
@@ -16,7 +16,7 @@ export default function Login() {
     try {
       // Obtém os dados do usuário do Google
       const userInfo = await axios.get(
-        'https://www.googleapis.com/oauth2/v3/userinfo',
+        "https://www.googleapis.com/oauth2/v3/userinfo",
         {
           headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
         }
@@ -77,6 +77,7 @@ export default function Login() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
+        console.error("Erro do backend:", errorData);
         throw new Error(
           errorData?.message || `HTTP error! status: ${response.status}`
         );
@@ -118,8 +119,8 @@ export default function Login() {
           <p className="text-center text-gray-600 mb-8">
             Novo aqui? Cadastre-se agora mesmo.
           </p>
-          <button 
-            onClick={() => window.location.href = '/register'}
+          <button
+            onClick={() => (window.location.href = "/register")}
             className="w-full mb-6 px-6 py-3 border-2 border-[#FF6B00] text-[#FF6B00] rounded-full hover:bg-[#FF6B00] hover:text-white transition-colors"
           >
             Cadastre-se
@@ -127,7 +128,7 @@ export default function Login() {
           <div className="text-center">
             <p className="text-gray-400 mb-4">ou cadastre-se com</p>
             <div className="space-y-3">
-              <button 
+              <button
                 onClick={() => googleLogin()}
                 className="w-full flex items-center justify-center gap-2 bg-[#4285F4] text-white px-6 py-3 rounded-full hover:bg-[#3367D6] transition-colors"
               >
@@ -196,7 +197,7 @@ export default function Login() {
           <div className="mt-8">
             <div className="text-center text-white mb-4">ou</div>
             <div className="space-y-3">
-              <button 
+              <button
                 onClick={() => googleLogin()}
                 className="w-full flex items-center justify-center gap-2 bg-[#4285F4] text-white px-6 py-3 rounded-full hover:bg-[#3367D6] transition-colors"
               >

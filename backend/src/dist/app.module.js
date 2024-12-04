@@ -13,18 +13,19 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const auth_module_1 = require("./auth/auth.module");
-const user_module_1 = require("./user/user.module");
-const menuItem_module_1 = require("./menuItem/menuItem.module");
-const store_module_1 = require("./store/store.module");
-const owner_module_1 = require("./owner/owner.module");
-const order_module_1 = require("./order/order.module");
-const payment_method_module_1 = require("./payment-method/payment-method.module");
-const payment_module_1 = require("./payment/payment.module");
+const user_module_1 = require("./module/user.module");
+const menuItem_module_1 = require("./module/menuItem.module");
+const store_module_1 = require("./module/store.module");
+const owner_module_1 = require("./module/owner.module");
+const order_module_1 = require("./module/order.module");
+const payment_method_module_1 = require("./module/payment-method.module");
+const payment_module_1 = require("./module/payment.module");
 const stripe_module_1 = require("./stripe/stripe.module");
-const payment_method_controller_1 = require("./payment-method/payment-method.controller");
+const payment_method_controller_1 = require("./controller/payment-method.controller");
 const stripe_controller_1 = require("./stripe/stripe.controller");
 const stripe_service_1 = require("./stripe/stripe.service");
 const config_1 = require("@nestjs/config");
+const product_order_module_1 = require("./module/product-order.module");
 let AppModule = class AppModule {
     constructor(configService) {
         this.configService = configService;
@@ -57,6 +58,7 @@ exports.AppModule = AppModule = __decorate([
             payment_method_module_1.PaymentMethodModule,
             payment_module_1.PaymentModule,
             stripe_module_1.StripeModule,
+            product_order_module_1.ProductOrderModule,
         ],
         controllers: [payment_method_controller_1.PaymentMethodController, stripe_controller_1.StripeController],
         providers: [stripe_service_1.StripeService],

@@ -1,18 +1,19 @@
 import { Logger, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
-import { MenuItemModule } from './menuItem/menuItem.module';
-import { StoreModule } from './store/store.module';
-import { OwnerModule } from './owner/owner.module';
-import { OrderModule } from './order/order.module';
-import { PaymentMethodModule } from './payment-method/payment-method.module';
-import { PaymentModule } from './payment/payment.module';
+import { UserModule } from './module/user.module';
+import { MenuItemModule } from './module/menuItem.module';
+import { StoreModule } from './module/store.module';
+import { OwnerModule } from './module/owner.module';
+import { OrderModule } from './module/order.module';
+import { PaymentMethodModule } from './module/payment-method.module';
+import { PaymentModule } from './module/payment.module';
 import { StripeModule } from './stripe/stripe.module';
-import { PaymentMethodController } from './payment-method/payment-method.controller';
+import { PaymentMethodController } from './controller/payment-method.controller';
 import { StripeController } from './stripe/stripe.controller';
 import { StripeService } from './stripe/stripe.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ProductOrderModule } from './module/product-order.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     PaymentMethodModule,
     PaymentModule,
     StripeModule,
+    ProductOrderModule,
   ],
   controllers: [PaymentMethodController, StripeController],
   providers: [StripeService],

@@ -10,6 +10,8 @@ export default function Kalzone() {
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const { addItem } = useCart();
 
+  
+
   const kalzoneMenu = {
     featured: [
       {
@@ -113,7 +115,8 @@ export default function Kalzone() {
       description: item.description,
       price: item.price,
       quantity,
-      imageUrl: item.image,
+      imageUrl: item.image || '',
+      menuItemId: 0
     });
     setSelectedItem(null);
   };
