@@ -16,7 +16,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<Login />} />
         <Route path="/register" element={<UserRegistration />} />
         <Route path="/pedidos" element={<Orders />} />
         <Route path="/minikalzone" element={<Kalzone />} />

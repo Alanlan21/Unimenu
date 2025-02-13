@@ -35,6 +35,7 @@ export default function Orders() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
+  // Busca os pedidos do usuário e ordena por data
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -75,6 +76,7 @@ export default function Orders() {
     fetchOrders();
   }, []);
 
+  // Deleta um pedido específico
   const handleDeleteOrder = async (orderId: number) => {
     try {
       await orderApi.deleteOrder(orderId);
@@ -85,16 +87,19 @@ export default function Orders() {
     }
   };
 
+  // Abre o modal com detalhes do pedido
   const handleDetailsClick = (order: Order) => {
     setSelectedOrder(order);
     setIsDetailsModalOpen(true);
   };
 
+  // Formata a data para o padrão brasileiro
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString("pt-BR");
   };
 
+  // Formata a hora para o padrão brasileiro
   const formatTime = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleTimeString("pt-BR", {
@@ -103,6 +108,7 @@ export default function Orders() {
     });
   };
 
+  // Adiciona minutos a uma data
   const addMinutes = (date: string, minutes: number) => {
     return new Date(new Date(date).getTime() + minutes * 60000);
   };

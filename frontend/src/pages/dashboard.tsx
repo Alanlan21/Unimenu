@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { MessageCircle } from 'lucide-react';
 import Header from '../components/Header';
 import StoresCarousel from '../components/StoresCarousel';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// Interface que define a estrutura de uma loja
 interface Store {
   id: number;
   name: string;
@@ -12,6 +13,7 @@ interface Store {
 
 
 export default function Dashboard() {
+  // Array com dados mockados das lojas
   const mockStores = [
     { id: 1, name: "Mini Kalzone", logoUrl: "/kalzone.png", isOpen: true },
     {
@@ -42,8 +44,9 @@ export default function Dashboard() {
     { id: 7, name: "Go Coffee", logoUrl: "/gocofee.png", isOpen: false },
   ];
 
-  
+  // Filtra as lojas que estão abertas
   const openStores = mockStores.filter(store => store.isOpen);
+  // Filtra as lojas que estão fechadas
   const closedStores = mockStores.filter(store => !store.isOpen);
 
   return (

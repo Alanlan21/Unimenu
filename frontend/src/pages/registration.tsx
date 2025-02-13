@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 export default function Register() {
+  // Estado para armazenar os dados do formulário
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,6 +24,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Manipula as mudanças nos campos do formulário
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -33,6 +35,7 @@ export default function Register() {
     }));
   };
 
+  // Processa o envio do formulário
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -61,6 +64,7 @@ export default function Register() {
     }
   };
 
+  // Renderiza o componente de registro
   return (
     <div className="h-full bg-[#FFF5E6] flex items-center justify-center">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl mx-4 overflow-hidden flex flex-col md:flex-row">
@@ -265,4 +269,5 @@ export default function Register() {
       </div>
     </div>
   );
+
 }

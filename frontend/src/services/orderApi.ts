@@ -4,9 +4,10 @@ import { CartItem } from "../types/cart";
 import { paymentApi } from "./paymentApi";
 
 export const orderApi = {
+  // Cria um novo pedido com itens do carrinho
   createOrder: async (userId: number, cartItems: CartItem[]) => {
     try {
-      // Create the main order
+      // cria a ordem principal
       const orderResponse = await api.post(API_ENDPOINTS.orders, {
         idCliente: userId,
         order_date: new Date(),
@@ -16,7 +17,7 @@ export const orderApi = {
 
       const orderId = orderResponse.data.id;
 
-      // Create product orders
+      // Cria os itens do pedido
       const productOrders = cartItems.map(item => ({
         menuItemId: item.id,
         quantity: item.quantity,
@@ -29,7 +30,7 @@ export const orderApi = {
         )
       );
 
-      // Calculate total and create payment
+      // Calcula total e cria pagamento
       const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
       await paymentApi.createPayment(orderId, total);
 
@@ -40,8 +41,7 @@ export const orderApi = {
     }
   },
 
-
-
+  // Cria uma intenção de pagamento no Stripe
   createPaymentIntent: async (amount: number, orderId: number) => {
     try {
       const response = await api.post(API_ENDPOINTS.stripe, {
@@ -56,6 +56,7 @@ export const orderApi = {
     }
   },
 
+  // Atualiza o status de um pedido
   updateOrderStatus: async (orderId: number, status: string) => {
     try {
       const response = await api.patch(`${API_ENDPOINTS.orders}/${orderId}`, {
@@ -68,6 +69,7 @@ export const orderApi = {
     }
   },
 
+  // Remove um pedido do sistema
   deleteOrder: async (orderId: number) => {
     try {
       await api.delete(`${API_ENDPOINTS.orders}/${orderId}`);
@@ -77,4 +79,3 @@ export const orderApi = {
     }
   }
 };
-

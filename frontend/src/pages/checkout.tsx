@@ -9,6 +9,7 @@ import { useCart } from '../hooks/useCart';
 import Header from '../components/Header';
 import { orderApi } from '../services/orderApi';
 
+// Inicializa o Stripe com a chave pública
 const stripePromise = loadStripe('pk_test_51Q5UHjJvaS5rJye8xiZaLT1WvrfLeEy9IWeSoVuLC1pHSbQvIlN8BpR7bRr9twD5HQ0c1TcWCcC3cTixSMJTsDst00t9tO7X0E');
 
 export default function Checkout() {
@@ -17,6 +18,7 @@ export default function Checkout() {
   const navigate = useNavigate();
   const { clearCart } = useCart();
   
+  // Obtém o valor total da URL
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const totalFromUrl = params.get('total');
@@ -34,6 +36,7 @@ export default function Checkout() {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // Inicializa os elementos do Stripe e monta o componente de cartão
   useEffect(() => {
     const initializeStripe = async () => {
       const stripeInstance = await stripePromise;
@@ -73,6 +76,7 @@ export default function Checkout() {
     };
   }, []);
 
+  // Processa o pagamento e cria o pedido
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     
@@ -135,6 +139,7 @@ export default function Checkout() {
     }
   };
 
+  // Renderiza o formulário de checkout e o resumo do pedido
   return (
     <div className="min-h-screen bg-[#FFF5E6]">
       <Header />

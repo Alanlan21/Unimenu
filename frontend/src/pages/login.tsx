@@ -4,6 +4,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 
 export default function Login() {
+  // Estado para armazenar credenciais do usuário
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -11,6 +12,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Função para lidar com o login do Google
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleGoogleSuccess = async (tokenResponse: any) => {
     try {
@@ -48,11 +50,13 @@ export default function Login() {
     }
   };
 
+  // Hook para configurar o login do Google
   const googleLogin = useGoogleLogin({
     onSuccess: handleGoogleSuccess,
     onError: () => setError("Erro ao fazer login com Google"),
   });
 
+  // Função para atualizar o estado das credenciais
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setCredentials((prev) => ({
@@ -61,6 +65,7 @@ export default function Login() {
     }));
   };
 
+  // Função para processar o envio do formulário de login
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);

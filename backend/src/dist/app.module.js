@@ -38,16 +38,29 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot(),
-            typeorm_1.TypeOrmModule.forRoot({
-                type: 'mysql',
-                host: 'localhost',
-                port: 3306,
-                username: 'root',
-                password: 'root',
-                database: 'unimenu',
-                autoLoadEntities: true,
-                synchronize: true,
-                logging: true,
+            typeorm_1.TypeOrmModule.forRootAsync({
+                imports: [config_1.ConfigModule],
+                inject: [config_1.ConfigService],
+                useFactory: (configService) => {
+                    const isMySQL = !!configService.get('DB_HOST');
+                    return isMySQL
+                        ? {
+                            type: 'mysql',
+                            host: configService.get('DB_HOST'),
+                            port: parseInt(configService.get('DB_PORT'), 10) || 3306,
+                            username: configService.get('DB_USERNAME'),
+                            password: configService.get('DB_PASSWORD'),
+                            database: configService.get('DB_NAME'),
+                            autoLoadEntities: true,
+                            synchronize: true,
+                        }
+                        : {
+                            type: 'sqlite',
+                            database: configService.get('SQLITE_DB_PATH') || ':memory:',
+                            autoLoadEntities: true,
+                            synchronize: true,
+                        };
+                },
             }),
             auth_module_1.AuthModule,
             user_module_1.UserModule,
