@@ -10,7 +10,7 @@ UniMenu is a web and mobile system designed to facilitate online ordering at res
 
 ## Technologies used
 
-Backend: Node.js, NestJS, MySQL, JWT authentication
+Backend: Typescript, Node.js, NestJS, TypeORM, JWT authentication
 
 Frontend: React, Vite, TypeScript
 
