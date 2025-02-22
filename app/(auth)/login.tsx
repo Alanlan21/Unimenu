@@ -12,8 +12,10 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../../contexts/auth';
 
 export default function LoginScreen() {
+  const { signIn } = useAuth();
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',
@@ -27,24 +29,8 @@ export default function LoginScreen() {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3000/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-      });
-
-      if (!response.ok) {
-        throw new Error('Credenciais inválidas');
-      }
-
-      const data = await response.json();
-      // Aqui você pode usar AsyncStorage para armazenar o token
-      // await AsyncStorage.setItem('userToken', data.access_token);
-      // await AsyncStorage.setItem('user', JSON.stringify(data.user));
-      
-      router.replace({ pathname: '/(tabs)/index' });
+      await signIn(credentials);
+      router.replace('/');
     } catch (error) {
       setError('Erro ao fazer login. Verifique suas credenciais.');
     } finally {
@@ -95,7 +81,7 @@ export default function LoginScreen() {
           </View>
         </View>
 
-        <TouchableOpacity onPress={() => router.push('/forgot-password')}>
+        <TouchableOpacity onPress={() => router.push('/')}>
           <Text style={styles.forgotPassword}>Esqueci minha senha</Text>
         </TouchableOpacity>
 
