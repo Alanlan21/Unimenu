@@ -40,7 +40,7 @@ export default function LoginScreen() {
 
     try {
       await signIn(credentials);
-      router.replace('/');
+      router.replace('/perfil');
     } catch (error) {
       setError('Erro ao fazer login. Verifique suas credenciais.');
     } finally {

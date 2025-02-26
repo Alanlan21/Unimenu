@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   KeyboardAvoidingView,
@@ -12,9 +11,17 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import MaskInput from "react-native-mask-input";
 import { Picker } from "@react-native-picker/picker";
 import { useAuth } from "../../contexts/auth";
+import FormInput from "../../components/FormInput";
+import { validateRegisterForm } from "../../utils/validations";
+
+const genderOptions = [
+  { label: "Selecione o gênero*", value: "" },
+  { label: "Masculino", value: "masculino" },
+  { label: "Feminino", value: "feminino" },
+  { label: "Outro", value: "outro" },
+];
 
 export default function RegisterScreen() {
   const { signUp } = useAuth();
@@ -31,21 +38,37 @@ export default function RegisterScreen() {
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string | null>>({});
+
+  const validateForm = () => {
+    const validationErrors = validateRegisterForm(formData);
+    setErrors(validationErrors);
+    return !Object.values(validationErrors).some((error) => error !== null);
+  };
+
+  const convertDateToISO = (date: string): string => {
+    const match = date.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (!match) {
+      throw new Error("Data inválida");
+    }
+
+    const [_, day, month, year] = match;
+    return `${year}-${month}-${day}`;
+  };
 
   const handleRegister = async () => {
     try {
+      if (!validateForm()) return;
+
       setError(null);
       setLoading(true);
 
-      if (formData.password !== formData.confirmPassword) {
-        throw new Error("As senhas não coincidem");
-      }
+      const formattedData = {
+        ...formData,
+        birthDate: convertDateToISO(formData.birthDate),
+      };
 
-      if (formData.email !== formData.confirmEmail) {
-        throw new Error("Os emails não coincidem");
-      }
-
-      await signUp(formData);
+      await signUp(formattedData);
     } catch (error) {
       setError(
         error instanceof Error ? error.message : "Erro ao realizar cadastro"
@@ -77,231 +100,180 @@ export default function RegisterScreen() {
         </View>
 
         <Text style={styles.title}>Faça seu Cadastro!</Text>
-        <Text style={styles.subtitle}>Só bata alguns minutinhos...</Text>
+        <Text style={styles.subtitle}>É rapidinho...</Text>
 
-        <Text style={styles.requiredText}>
-          Todos itens com asterisco(*) são obrigatórios
-        </Text>
+        <View style={{ alignItems: "center", marginBottom: 10 }}>
+          <Text style={styles.requiredText}>
+            Todos itens com asterisco(*) são obrigatórios
+          </Text>
+        </View>
 
         <View style={styles.inputContainer}>
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="person-outline"
-              size={20}
-              color="#666"
-              style={styles.inputIcon}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Nome completo*"
-              value={formData.name}
-              onChangeText={(text) =>
-                setFormData((prev) => ({ ...prev, name: text }))
-              }
-            />
-          </View>
+          <FormInput
+            icon="person-outline"
+            placeholder="Nome completo*"
+            value={formData.name}
+            onChangeText={(text) =>
+              setFormData((prev) => ({ ...prev, name: text }))
+            }
+            error={errors.name}
+          />
 
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="card-outline"
-              size={20}
-              color="#666"
-              style={styles.inputIcon}
-            />
-            <MaskInput
-              style={styles.input}
-              placeholder="CPF*"
-              value={formData.cpf}
-              onChangeText={(masked, unmasked) =>
-                setFormData((prev) => ({ ...prev, cpf: unmasked }))
-              }
-              mask={[
-                /\d/,
-                /\d/,
-                /\d/,
-                ".",
-                /\d/,
-                /\d/,
-                /\d/,
-                ".",
-                /\d/,
-                /\d/,
-                /\d/,
-                "-",
-                /\d/,
-                /\d/,
+          <FormInput
+            icon="card-outline"
+            placeholder="CPF*"
+            value={formData.cpf}
+            onChangeText={(text) => {
+              const unmasked = text.replace(/\D/g, "");
+              setFormData((prev) => ({ ...prev, cpf: unmasked }));
+            }}
+            mask={[
+              /\d/,
+              /\d/,
+              /\d/,
+              ".",
+              /\d/,
+              /\d/,
+              /\d/,
+              ".",
+              /\d/,
+              /\d/,
+              /\d/,
+              "-",
+              /\d/,
+              /\d/,
+            ]}
+            keyboardType="numeric"
+            error={errors.cpf}
+          />
+
+          <FormInput
+            icon="calendar-outline"
+            placeholder="Data de nascimento* (DD/MM/AAAA)"
+            value={formData.birthDate}
+            onChangeText={(text) => {
+              const masked = text.replace(/(\d{2})(\d{2})(\d{4})/, "$1/$2/$3");
+              setFormData((prev) => ({ ...prev, birthDate: masked }));
+            }}
+            mask={[/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/]}
+            keyboardType="numeric"
+            error={errors.birthDate}
+          />
+          <View style={styles.pickerContainer}>
+            <View
+              style={[
+                styles.pickerWrapper,
+                errors.gender && styles.pickerWrapperError,
               ]}
-              keyboardType="numeric"
-            />
-          </View>
-
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="person-outline"
-              size={20}
-              color="#666"
-              style={styles.inputIcon}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Nome de usuário*"
-              value={formData.email}
-              onChangeText={(text) =>
-                setFormData((prev) => ({ ...prev, email: text }))
-              }
-              autoCapitalize="none"
-            />
-          </View>
-
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="calendar-outline"
-              size={20}
-              color="#666"
-              style={styles.inputIcon}
-            />
-            <MaskInput
-              style={styles.input}
-              placeholder="Data de nascimento*"
-              value={formData.birthDate}
-              onChangeText={(masked, unmasked) =>
-                setFormData((prev) => ({ ...prev, birthDate: unmasked }))
-              }
-              mask={[/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/]}
-              keyboardType="numeric"
-            />
-          </View>
-
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="male-female-outline"
-              size={20}
-              color="#666"
-              style={styles.inputIcon}
-            />
-            <Picker
-              selectedValue={formData.gender}
-              onValueChange={(itemValue) =>
-                setFormData((prev) => ({ ...prev, gender: itemValue }))
-              }
-              style={styles.picker}
-              mode="dropdown"
             >
-              <Picker.Item label="Selecione o gênero" value="" color="#666" style={{ fontSize: 14 }} />
-              <Picker.Item label="Masculino" value="masculino" />
-              <Picker.Item label="Feminino" value="feminino" />
-              <Picker.Item label="Outro" value="outro" />
-            </Picker>
+              <Ionicons
+                name="male-female-outline"
+                size={20}
+                color={errors.gender ? "#FF3B30" : "#666"}
+                style={styles.pickerIcon}
+              />
+              <Picker
+                selectedValue={formData.gender}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, gender: value }))
+                }
+                style={styles.picker}
+                dropdownIconColor="#666"
+              >
+                {genderOptions.map((option) => (
+                  <Picker.Item
+                    key={option.value}
+                    label={option.label}
+                    value={option.value}
+                    color={option.value === "" ? "#999" : "#333"}
+                    style={
+                      option.value === ""
+                        ? styles.placeholderText
+                        : styles.pickerItemText
+                    }
+                  />
+                ))}
+              </Picker>
+            </View>
+            {errors.gender && (
+              <Text style={styles.errorText}>{errors.gender}</Text>
+            )}
           </View>
 
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="mail-outline"
-              size={20}
-              color="#666"
-              style={styles.inputIcon}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Email*"
-              value={formData.email}
-              onChangeText={(text) =>
-                setFormData((prev) => ({ ...prev, email: text }))
-              }
-              autoCapitalize="none"
-              keyboardType="email-address"
-            />
-          </View>
+          <FormInput
+            icon="mail-outline"
+            placeholder="Email*"
+            value={formData.email}
+            onChangeText={(text) =>
+              setFormData((prev) => ({ ...prev, email: text }))
+            }
+            autoCapitalize="none"
+            keyboardType="email-address"
+            error={errors.email}
+          />
 
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="mail-outline"
-              size={20}
-              color="#666"
-              style={styles.inputIcon}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Confirmar Email*"
-              value={formData.confirmEmail}
-              onChangeText={(text) =>
-                setFormData((prev) => ({ ...prev, confirmEmail: text }))
-              }
-              autoCapitalize="none"
-              keyboardType="email-address"
-            />
-          </View>
+          <FormInput
+            icon="mail-outline"
+            placeholder="Confirmar Email*"
+            value={formData.confirmEmail}
+            onChangeText={(text) =>
+              setFormData((prev) => ({ ...prev, confirmEmail: text }))
+            }
+            autoCapitalize="none"
+            keyboardType="email-address"
+            error={errors.confirmEmail}
+          />
 
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="call-outline"
-              size={20}
-              color="#666"
-              style={styles.inputIcon}
-            />
-            <MaskInput
-              style={styles.input}
-              placeholder="Telefone*"
-              value={formData.phone}
-              onChangeText={(masked, unmasked) =>
-                setFormData((prev) => ({ ...prev, phone: unmasked }))
-              }
-              mask={[
-                "(",
-                /\d/,
-                /\d/,
-                ")",
-                " ",
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                "-",
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-              ]}
-              keyboardType="numeric"
-            />
-          </View>
+          <FormInput
+            icon="call-outline"
+            placeholder="Telefone*"
+            value={formData.phone}
+            onChangeText={(text) => {
+              const unmasked = text.replace(/\D/g, "");
+              setFormData((prev) => ({ ...prev, phone: unmasked }));
+            }}
+            mask={[
+              "(",
+              /\d/,
+              /\d/,
+              ")",
+              " ",
+              /\d/,
+              /\d/,
+              /\d/,
+              /\d/,
+              /\d/,
+              "-",
+              /\d/,
+              /\d/,
+              /\d/,
+              /\d/,
+            ]}
+            keyboardType="numeric"
+            error={errors.phone}
+          />
 
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="lock-closed-outline"
-              size={20}
-              color="#666"
-              style={styles.inputIcon}
-            />
-            <TextInput
-              style={[styles.input, { flex: 1 }]}
-              placeholder="Senha*"
-              value={formData.password}
-              onChangeText={(text) =>
-                setFormData((prev) => ({ ...prev, password: text }))
-              }
-              secureTextEntry
-            />
-          </View>
+          <FormInput
+            icon="lock-closed-outline"
+            placeholder="Senha*"
+            value={formData.password}
+            onChangeText={(text) =>
+              setFormData((prev) => ({ ...prev, password: text }))
+            }
+            secureTextEntry
+            error={errors.password}
+          />
 
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="lock-closed-outline"
-              size={20}
-              color="#666"
-              style={styles.inputIcon}
-            />
-            <TextInput
-              style={[styles.input, { flex: 1 }]}
-              placeholder="Confirmar Senha*"
-              value={formData.confirmPassword}
-              onChangeText={(text) =>
-                setFormData((prev) => ({ ...prev, confirmPassword: text }))
-              }
-              secureTextEntry
-            />
-          </View>
+          <FormInput
+            icon="lock-closed-outline"
+            placeholder="Confirmar Senha*"
+            value={formData.confirmPassword}
+            onChangeText={(text) =>
+              setFormData((prev) => ({ ...prev, confirmPassword: text }))
+            }
+            secureTextEntry
+            error={errors.confirmPassword}
+          />
         </View>
 
         {error && <Text style={styles.errorText}>{error}</Text>}
@@ -376,12 +348,15 @@ const styles = StyleSheet.create({
     width: "100%",
     gap: 16,
   },
-  inputWrapper: {
+  pickerContainer: {
+    width: "100%",
+  },
+  pickerWrapper: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "white",
     borderRadius: 25,
-    paddingHorizontal: 15,
+    paddingLeft: 15,
     height: 50,
     shadowColor: "#000",
     shadowOffset: {
@@ -392,19 +367,18 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 3,
   },
-  inputIcon: {
-    marginRight: 10,
+  pickerWrapperError: {
+    borderColor: "#FF3B30",
+    borderWidth: 1,
   },
-  input: {
-    flex: 1,
-    height: "100%",
-    color: "#333",
+  pickerIcon: {
+    marginRight: 10,
   },
   errorText: {
     color: "#FF3B30",
-    textAlign: "center",
-    marginTop: 16,
-    marginBottom: 16,
+    fontSize: 12,
+    marginTop: 4,
+    marginLeft: 15,
   },
   continueButton: {
     backgroundColor: "#FF6B00",
@@ -434,9 +408,15 @@ const styles = StyleSheet.create({
   picker: {
     flex: 1,
     height: 50,
-    marginLeft: -12, // Move um pouco para a esquerda
-    fontSize: 14, // Diminui o tamanho do texto
-    color: "#666", // Mantém um tom mais suave
+    color: "#666",
+    marginLeft: -12, // Ajusta o alinhamento do texto
   },
-  
+  pickerItemText: {
+    fontSize: 14,
+    color: "#666",
+  },
+  placeholderText: {
+    fontSize: 14,
+    color: "#666",
+  },
 });

@@ -9,6 +9,15 @@ interface FormInputProps extends TextInputProps {
   mask?: (string | RegExp)[];
 }
 
+interface FormInputProps {
+  placeholder: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  secureTextEntry?: boolean;
+  error?: string | null;
+  rightElement?: React.ReactNode;
+}
+
 export default function FormInput({ 
   icon, 
   error, 

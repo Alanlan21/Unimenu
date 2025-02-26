@@ -22,6 +22,10 @@ export interface AuthResponse {
     id: string;
     name: string;
     email: string;
+    cpf: string;
+    phone: string;
+    gender: string;
+    birthDate: string;
   };
 }
 
