@@ -36,7 +36,7 @@ let UserController = class UserController {
             throw new common_1.HttpException('Credenciais inválidas', common_1.HttpStatus.UNAUTHORIZED);
         }
     }
-    findAll() {
+    async findAll() {
         return this.userService.findAll();
     }
     findOne(id) {

@@ -17,7 +17,10 @@ import { ProductOrderModule } from './module/product-order.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true, // Opcional: torna o ConfigModule global
+      envFilePath: '.env', // Especifica o caminho do .env, se necessário
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

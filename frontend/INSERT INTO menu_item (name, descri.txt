@@ -9,4 +9,4 @@ INSERT INTO menu_item (name, description, price, category) VALUES
 ('Kalzone Chocolate', 'Chocolate ao leite e chocolate branco', 8.9, 'Doces'),
 ('Kalzone com nutella', '', 8.9, 'Doces');
 
-insert into payment_method (id, name) values (1, 'Visa Credit'), (2, 'Mastercard Credit'), (3, 'Pix');
+insert into payment_method (id, name) values (1, 'Visa Credit'), (2, 'Mastercard Credit'), (3, 'Pix')

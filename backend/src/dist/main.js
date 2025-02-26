@@ -13,10 +13,18 @@ async function bootstrap() {
         forbidNonWhitelisted: true,
     }));
     app.enableCors({
-        origin: 'http://localhost:5173',
+        origin: (origin, callback) => {
+            const allowedOrigins = ['http://localhost:5173', 'http://localhost:8081'];
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            }
+            else {
+                callback(new Error('Origem não permitida pelo CORS'));
+            }
+        },
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-        credentials: true
+        credentials: true,
     });
     const port = process.env.PORT || 3000;
     console.log(`Servidor rodando na porta ${port}`);
