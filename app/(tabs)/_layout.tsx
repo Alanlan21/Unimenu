@@ -1,24 +1,28 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { HomeIcon, ShoppingCart } from 'lucide-react-native'; 
+
 
 export default function TabLayout() {
   return (
     <Tabs
-      screenOptions={{
-        tabBarStyle: {
-          backgroundColor: '#fff',
-          borderTopColor: '#e5e5e5',
-        },
-        tabBarActiveTintColor: '#007AFF',
-        headerStyle: {
-          backgroundColor: '#fff',
-        },
-        headerTitleStyle: {
-          color: '#000',
-        },
-      }}>
-      <Tabs.Screen
+    screenOptions={{
+      headerShown: false,
+      tabBarStyle: {
+        backgroundColor: '#FFEFCF',
+        height: 60,
+        borderTopWidth: 0,
+      },
+      tabBarActiveTintColor: '#f97316',
+      tabBarInactiveTintColor: '#e5e5e5',
+      tabBarLabelStyle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+      },
+    }}
+  >
+          <Tabs.Screen
         name="index"
         options={{
           title: 'Início',
@@ -27,6 +31,23 @@ export default function TabLayout() {
           ),
         }}
       />
+
+          <Tabs.Screen
+        name="dashboard"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color, size }) => <HomeIcon size={size} color={color} />, 
+        }}
+      />
+
+<Tabs.Screen
+        name="cart"
+        options={{
+          title: 'Carrinho',
+          tabBarIcon: ({ color, size }) => <ShoppingCart size={size} color={color} />,
+        }}
+      />
+
       <Tabs.Screen
         name="perfil"
         options={{
