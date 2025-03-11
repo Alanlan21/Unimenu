@@ -91,6 +91,10 @@ const styles = StyleSheet.create({
     color: '#1f2937',
     paddingVertical: 8,
   },
+  clearButton: {
+    padding: 4,
+    marginRight: 4,
+  },
   userIconButton: {
     padding: 4,
   },
