@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import { Search, User, ShoppingCart } from 'lucide-react-native';
+import { Search, User, ShoppingCart, X } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 
 export default function Header() {
   const router = useRouter();
+  const [searchText, setSearchText] = useState('');
+  const clearSearch = () => {
+    setSearchText('');
+  };
+
   return (
 <View style={styles.container}> 
   <View style={styles.topRow}>
@@ -22,9 +27,18 @@ export default function Header() {
             style={styles.searchInput}
             placeholder="Busque por um item ou estabelecimen..."
             placeholderTextColor="#9ca3af"
+            value={searchText}
+            onChangeText={setSearchText}
           />
+           {searchText.length > 0 && (
+            <TouchableOpacity 
+              onPress={clearSearch}
+              style={styles.clearButton}
+            >
+              <X size={18} color="#9ca3af" />
+            </TouchableOpacity>
+          )}
         </View>
-
         <TouchableOpacity style={styles.userIconButton}>
             <User size={24} color="#f97316" />
           </TouchableOpacity>
