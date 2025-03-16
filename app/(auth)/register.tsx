@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,71 +8,89 @@ import {
   Platform,
   ScrollView,
   Image,
-} from "react-native";
-import { router } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { Picker } from "@react-native-picker/picker";
-import { useAuth } from "../../contexts/auth";
-import FormInput from "../../components/FormInput";
-import { validateRegisterForm } from "../../utils/validations";
+  Animated,
+} from 'react-native';
+import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { Picker } from '@react-native-picker/picker';
+import { useAuth } from '../../contexts/auth';
+import FormInput from '../../components/FormInput';
+import LoadingOverlay from '../../components/LoadingOverlay';
+import { validateRegisterForm } from '../../utils/validations';
 
 const genderOptions = [
-  { label: "Selecione o gênero*", value: "" },
-  { label: "Masculino", value: "masculino" },
-  { label: "Feminino", value: "feminino" },
-  { label: "Outro", value: "outro" },
+  { label: 'Gênero*', value: '' },
+  { label: 'Masculino', value: 'masculino' },
+  { label: 'Feminino', value: 'feminino' },
+  { label: 'Outro', value: 'outro' },
 ];
 
 export default function RegisterScreen() {
   const { signUp } = useAuth();
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    confirmEmail: "",
-    password: "",
-    confirmPassword: "",
-    cpf: "",
-    phone: "",
-    gender: "",
-    birthDate: "",
+    name: '',
+    email: '',
+    confirmEmail: '',
+    password: '',
+    confirmPassword: '',
+    cpf: '',
+    phone: '',
+    gender: '',
+    birthDate: '',
   });
-  const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string | null>>({});
+  const [shake] = useState(new Animated.Value(0));
+
+  const shakeAnimation = () => {
+    Animated.sequence([
+      Animated.timing(shake, {
+        toValue: 10,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+      Animated.timing(shake, {
+        toValue: -10,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+      Animated.timing(shake, {
+        toValue: 10,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+      Animated.timing(shake, {
+        toValue: 0,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
 
   const validateForm = () => {
     const validationErrors = validateRegisterForm(formData);
     setErrors(validationErrors);
-    return !Object.values(validationErrors).some((error) => error !== null);
-  };
-
-  const convertDateToISO = (date: string): string => {
-    const match = date.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-    if (!match) {
-      throw new Error("Data inválida");
-    }
-
-    const [_, day, month, year] = match;
-    return `${year}-${month}-${day}`;
+    return !Object.values(validationErrors).some(error => error !== null);
   };
 
   const handleRegister = async () => {
+    if (!validateForm()) {
+      shakeAnimation();
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
     try {
-      if (!validateForm()) return;
-
-      setError(null);
-      setLoading(true);
-
-      const formattedData = {
-        ...formData,
-        birthDate: convertDateToISO(formData.birthDate),
-      };
-
-      await signUp(formattedData);
+      await signUp(formData);
+      router.replace('/(tabs)');
     } catch (error) {
-      setError(
-        error instanceof Error ? error.message : "Erro ao realizar cadastro"
-      );
+      setError('Erro ao realizar cadastro. Por favor, tente novamente.');
+      shakeAnimation();
     } finally {
       setLoading(false);
     }
@@ -80,224 +98,216 @@ export default function RegisterScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <Ionicons name="arrow-back" size={24} color="#FF6B00" />
-        </TouchableOpacity>
-
         <View style={styles.logoContainer}>
           <Image
-            source={require("../../assets/images/unimenu-logo.png")}
+            source={require('../../assets/images/unimenu-logo.png')}
             style={styles.logo}
             resizeMode="contain"
           />
         </View>
 
-        <Text style={styles.title}>Faça seu Cadastro!</Text>
-        <Text style={styles.subtitle}>É rapidinho...</Text>
+        <Animated.View style={[styles.formContainer, { transform: [{ translateX: shake }] }]}>
+          <Text style={styles.title}>Criar Conta</Text>
 
-        <View style={{ alignItems: "center", marginBottom: 10 }}>
-          <Text style={styles.requiredText}>
-            Todos itens com asterisco(*) são obrigatórios
-          </Text>
-        </View>
+          <View style={styles.inputContainer}>
+            <FormInput
+              icon="person-outline"
+              placeholder="Nome completo*"
+              value={formData.name}
+              onChangeText={(text) => {
+                setFormData(prev => ({ ...prev, name: text }));
+                setErrors(prev => ({ ...prev, name: null }));
+              }}
+              error={errors.name}
+              editable={!loading}
+            />
 
-        <View style={styles.inputContainer}>
-          <FormInput
-            icon="person-outline"
-            placeholder="Nome completo*"
-            value={formData.name}
-            onChangeText={(text) =>
-              setFormData((prev) => ({ ...prev, name: text }))
-            }
-            error={errors.name}
-          />
+            <FormInput
+              icon="mail-outline"
+              placeholder="Email*"
+              value={formData.email}
+              onChangeText={(text) => {
+                setFormData(prev => ({ ...prev, email: text }));
+                setErrors(prev => ({ ...prev, email: null, confirmEmail: null }));
+              }}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              error={errors.email}
+              editable={!loading}
+            />
 
-          <FormInput
-            icon="card-outline"
-            placeholder="CPF*"
-            value={formData.cpf}
-            onChangeText={(text) => {
-              const unmasked = text.replace(/\D/g, "");
-              setFormData((prev) => ({ ...prev, cpf: unmasked }));
-            }}
-            mask={[
-              /\d/,
-              /\d/,
-              /\d/,
-              ".",
-              /\d/,
-              /\d/,
-              /\d/,
-              ".",
-              /\d/,
-              /\d/,
-              /\d/,
-              "-",
-              /\d/,
-              /\d/,
-            ]}
-            keyboardType="numeric"
-            error={errors.cpf}
-          />
+            <FormInput
+              icon="mail-outline"
+              placeholder="Confirmar email*"
+              value={formData.confirmEmail}
+              onChangeText={(text) => {
+                setFormData(prev => ({ ...prev, confirmEmail: text }));
+                setErrors(prev => ({ ...prev, confirmEmail: null }));
+              }}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              error={errors.confirmEmail}
+              editable={!loading}
+            />
 
-          <FormInput
-            icon="calendar-outline"
-            placeholder="Data de nascimento* (DD/MM/AAAA)"
-            value={formData.birthDate}
-            onChangeText={(text) => {
-              const masked = text.replace(/(\d{2})(\d{2})(\d{4})/, "$1/$2/$3");
-              setFormData((prev) => ({ ...prev, birthDate: masked }));
-            }}
-            mask={[/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/]}
-            keyboardType="numeric"
-            error={errors.birthDate}
-          />
-          <View style={styles.pickerContainer}>
-            <View
-              style={[
-                styles.pickerWrapper,
-                errors.gender && styles.pickerWrapperError,
-              ]}
-            >
-              <Ionicons
-                name="male-female-outline"
-                size={20}
-                color={errors.gender ? "#FF3B30" : "#666"}
-                style={styles.pickerIcon}
-              />
-              <Picker
-                selectedValue={formData.gender}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({ ...prev, gender: value }))
-                }
-                style={styles.picker}
-                dropdownIconColor="#666"
-              >
-                {genderOptions.map((option) => (
-                  <Picker.Item
-                    key={option.value}
-                    label={option.label}
-                    value={option.value}
-                    color={option.value === "" ? "#999" : "#333"}
-                    style={
-                      option.value === ""
-                        ? styles.placeholderText
-                        : styles.pickerItemText
-                    }
+            <FormInput
+              icon="lock-closed-outline"
+              placeholder="Senha*"
+              value={formData.password}
+              onChangeText={(text) => {
+                setFormData(prev => ({ ...prev, password: text }));
+                setErrors(prev => ({ ...prev, password: null, confirmPassword: null }));
+              }}
+              secureTextEntry={!showPassword}
+              error={errors.password}
+              editable={!loading}
+              rightElement={
+                <TouchableOpacity 
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeIcon}
+                  disabled={loading}>
+                  <Ionicons 
+                    name={showPassword ? "eye-outline" : "eye-off-outline"} 
+                    size={20} 
+                    color={loading ? "#999" : "#666"} 
                   />
-                ))}
-              </Picker>
+                </TouchableOpacity>
+              }
+            />
+
+            <FormInput
+              icon="lock-closed-outline"
+              placeholder="Confirmar senha*"
+              value={formData.confirmPassword}
+              onChangeText={(text) => {
+                setFormData(prev => ({ ...prev, confirmPassword: text }));
+                setErrors(prev => ({ ...prev, confirmPassword: null }));
+              }}
+              secureTextEntry={!showConfirmPassword}
+              error={errors.confirmPassword}
+              editable={!loading}
+              rightElement={
+                <TouchableOpacity 
+                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                  style={styles.eyeIcon}
+                  disabled={loading}>
+                  <Ionicons 
+                    name={showConfirmPassword ? "eye-outline" : "eye-off-outline"} 
+                    size={20} 
+                    color={loading ? "#999" : "#666"} 
+                  />
+                </TouchableOpacity>
+              }
+            />
+
+            <FormInput
+              icon="card-outline"
+              placeholder="CPF*"
+              value={formData.cpf}
+              onChangeText={(text) => {
+                setFormData(prev => ({ ...prev, cpf: text }));
+                setErrors(prev => ({ ...prev, cpf: null }));
+              }}
+              keyboardType="numeric"
+              mask={[/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/]}
+              error={errors.cpf}
+              editable={!loading}
+            />
+
+            <FormInput
+              icon="call-outline"
+              placeholder="Telefone*"
+              value={formData.phone}
+              onChangeText={(text) => {
+                setFormData(prev => ({ ...prev, phone: text }));
+                setErrors(prev => ({ ...prev, phone: null }));
+              }}
+              keyboardType="phone-pad"
+              mask={['(', /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+              error={errors.phone}
+              editable={!loading}
+            />
+
+            <FormInput
+              icon="calendar-outline"
+              placeholder="Data de nascimento*"
+              value={formData.birthDate}
+              onChangeText={(text) => {
+                setFormData(prev => ({ ...prev, birthDate: text }));
+                setErrors(prev => ({ ...prev, birthDate: null }));
+              }}
+              keyboardType="numeric"
+              mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
+              error={errors.birthDate}
+              editable={!loading}
+            />
+
+            <View style={styles.pickerContainer}>
+              <View style={[
+                styles.pickerWrapper,
+                errors.gender && styles.pickerWrapperError
+              ]}>
+                <Ionicons 
+                  name="male-female-outline" 
+                  size={20} 
+                  color={errors.gender ? '#FF3B30' : '#666'} 
+                  style={styles.pickerIcon} 
+                />
+                <Picker
+                  selectedValue={formData.gender}
+                  onValueChange={(value) => {
+                    setFormData(prev => ({ ...prev, gender: value }));
+                    setErrors(prev => ({ ...prev, gender: null }));
+                  }}
+                  enabled={!loading}
+                  style={[styles.picker, loading && styles.pickerDisabled]}
+                  dropdownIconColor={loading ? "#999" : "#666"}>
+                  {genderOptions.map((option) => (
+                    <Picker.Item 
+                      key={option.value} 
+                      label={option.label} 
+                      value={option.value}
+                      color={option.value === '' ? '#999' : '#333'}
+                      style={option.value === '' ? styles.placeholderText : styles.pickerItemText}
+                    />
+                  ))}
+                </Picker>
+              </View>
+              {errors.gender && (
+                <Text style={styles.errorText}>{errors.gender}</Text>
+              )}
             </View>
-            {errors.gender && (
-              <Text style={styles.errorText}>{errors.gender}</Text>
-            )}
           </View>
 
-          <FormInput
-            icon="mail-outline"
-            placeholder="Email*"
-            value={formData.email}
-            onChangeText={(text) =>
-              setFormData((prev) => ({ ...prev, email: text }))
-            }
-            autoCapitalize="none"
-            keyboardType="email-address"
-            error={errors.email}
-          />
+          {error && (
+            <Text style={styles.errorMessage}>{error}</Text>
+          )}
 
-          <FormInput
-            icon="mail-outline"
-            placeholder="Confirmar Email*"
-            value={formData.confirmEmail}
-            onChangeText={(text) =>
-              setFormData((prev) => ({ ...prev, confirmEmail: text }))
-            }
-            autoCapitalize="none"
-            keyboardType="email-address"
-            error={errors.confirmEmail}
-          />
+          <TouchableOpacity
+            style={[styles.registerButton, loading && styles.registerButtonDisabled]}
+            onPress={handleRegister}
+            disabled={loading}>
+            <Text style={styles.registerButtonText}>
+              {loading ? 'Cadastrando...' : 'Cadastrar'}
+            </Text>
+          </TouchableOpacity>
 
-          <FormInput
-            icon="call-outline"
-            placeholder="Telefone*"
-            value={formData.phone}
-            onChangeText={(text) => {
-              const unmasked = text.replace(/\D/g, "");
-              setFormData((prev) => ({ ...prev, phone: unmasked }));
-            }}
-            mask={[
-              "(",
-              /\d/,
-              /\d/,
-              ")",
-              " ",
-              /\d/,
-              /\d/,
-              /\d/,
-              /\d/,
-              /\d/,
-              "-",
-              /\d/,
-              /\d/,
-              /\d/,
-              /\d/,
-            ]}
-            keyboardType="numeric"
-            error={errors.phone}
-          />
-
-          <FormInput
-            icon="lock-closed-outline"
-            placeholder="Senha*"
-            value={formData.password}
-            onChangeText={(text) =>
-              setFormData((prev) => ({ ...prev, password: text }))
-            }
-            secureTextEntry
-            error={errors.password}
-          />
-
-          <FormInput
-            icon="lock-closed-outline"
-            placeholder="Confirmar Senha*"
-            value={formData.confirmPassword}
-            onChangeText={(text) =>
-              setFormData((prev) => ({ ...prev, confirmPassword: text }))
-            }
-            secureTextEntry
-            error={errors.confirmPassword}
-          />
-        </View>
-
-        {error && <Text style={styles.errorText}>{error}</Text>}
-
-        <TouchableOpacity
-          style={[
-            styles.continueButton,
-            loading && styles.continueButtonDisabled,
-          ]}
-          onPress={handleRegister}
-          disabled={loading}
-        >
-          <Text style={styles.continueButtonText}>
-            {loading ? "Cadastrando..." : "Continuar"}
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.backTextButton}
-          onPress={() => router.back()}
-        >
-          <Text style={styles.backButtonText}>Voltar</Text>
-        </TouchableOpacity>
+          <View style={styles.loginContainer}>
+            <Text style={styles.loginText}>Já tem uma conta? </Text>
+            <TouchableOpacity 
+              onPress={() => router.push('/login')}
+              disabled={loading}>
+              <Text style={[styles.loginLink, loading && styles.disabledText]}>
+                Faça login
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
       </ScrollView>
+      {loading && <LoadingOverlay />}
     </KeyboardAvoidingView>
   );
 }
@@ -305,60 +315,48 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFF5E6",
+    backgroundColor: '#FFF5E6',
   },
   scrollContent: {
     flexGrow: 1,
     padding: 20,
-    paddingTop: Platform.OS === "ios" ? 60 : 40,
-  },
-  backButton: {
-    position: "absolute",
-    top: Platform.OS === "ios" ? 60 : 40,
-    left: 20,
-    zIndex: 1,
   },
   logoContainer: {
-    alignItems: "center",
-    marginBottom: 24,
+    alignItems: 'center',
+    marginVertical: 20,
   },
   logo: {
-    width: 120,
-    height: 120,
+    width: 100,
+    height: 100,
+  },
+  formContainer: {
+    width: '100%',
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
-    color: "#FF6B00",
-    textAlign: "center",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#666",
-    textAlign: "center",
-    marginBottom: 24,
-  },
-  requiredText: {
-    fontSize: 14,
-    color: "#666",
-    marginBottom: 24,
+    fontWeight: 'bold',
+    color: '#FF6B00',
+    marginBottom: 30,
+    textAlign: 'center',
   },
   inputContainer: {
-    width: "100%",
+    width: '100%',
     gap: 16,
   },
+  eyeIcon: {
+    padding: 10,
+  },
   pickerContainer: {
-    width: "100%",
+    width: '100%',
   },
   pickerWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
     borderRadius: 25,
-    paddingLeft: 15,
+    paddingHorizontal: 15,
     height: 50,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -368,55 +366,72 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   pickerWrapperError: {
-    borderColor: "#FF3B30",
+    borderColor: '#FF3B30',
     borderWidth: 1,
   },
   pickerIcon: {
     marginRight: 10,
   },
+  picker: {
+    flex: 1,
+    height: 50,
+    color: '#333',
+    marginLeft: -10,
+  },
+  pickerDisabled: {
+    opacity: 0.7,
+  },
+  pickerItemText: {
+    fontSize: 14,
+    color: '#333',
+  },
+  placeholderText: {
+    fontSize: 14,
+    color: '#999',
+  },
   errorText: {
-    color: "#FF3B30",
+    color: '#FF3B30',
     fontSize: 12,
     marginTop: 4,
     marginLeft: 15,
   },
-  continueButton: {
-    backgroundColor: "#FF6B00",
+  errorMessage: {
+    color: '#FF3B30',
+    textAlign: 'center',
+    marginVertical: 20,
+    backgroundColor: 'rgba(255, 59, 48, 0.1)',
+    padding: 10,
+    borderRadius: 8,
+  },
+  registerButton: {
+    backgroundColor: '#FF6B00',
     borderRadius: 25,
     paddingVertical: 15,
-    width: "100%",
-    alignItems: "center",
-    marginTop: 24,
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 20,
   },
-  continueButtonDisabled: {
+  registerButtonDisabled: {
     opacity: 0.7,
   },
-  continueButtonText: {
-    color: "white",
+  registerButtonText: {
+    color: 'white',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
-  backTextButton: {
-    alignItems: "center",
-    marginTop: 16,
-    marginBottom: 20,
+  loginContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
   },
-  backButtonText: {
-    color: "#666",
-    fontSize: 16,
+  loginText: {
+    color: '#666',
   },
-  picker: {
-    flex: 1,
-    height: 50,
-    color: "#666",
-    marginLeft: -12, // Ajusta o alinhamento do texto
+  loginLink: {
+    color: '#FF6B00',
+    fontWeight: 'bold',
   },
-  pickerItemText: {
-    fontSize: 14,
-    color: "#666",
-  },
-  placeholderText: {
-    fontSize: 14,
-    color: "#666",
+  disabledText: {
+    opacity: 0.7,
   },
 });
