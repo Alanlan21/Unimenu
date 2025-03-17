@@ -40,6 +40,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setToken(storedToken);
         setRefreshToken(storedRefreshToken);
         setUser(JSON.parse(storedUser));
+
+        // Carregar dados atualizados do usuário
+        if (storedToken) {
+          try {
+            const response = await fetch(`${API_URL}/auth/me`, {
+              headers: {
+                'Authorization': `Bearer ${storedToken}`,
+              },
+            });
+            if (response.ok) {
+              const userData = await response.json();
+              setUser(userData);
+              await AsyncStorage.setItem('@auth:user', JSON.stringify(userData));
+            }
+          } catch (error) {
+            console.error('Error fetching user data:', error);
+          }
+        }
       }
     } catch (error) {
       console.error('Error loading auth data:', error);
@@ -67,9 +85,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const data = await response.json();
       await AsyncStorage.setItem('@auth:token', data.access_token);
       setToken(data.access_token);
+
+      // Atualizar dados do usuário após refresh do token
+      const userResponse = await fetch(`${API_URL}/auth/me`, {
+        headers: {
+          'Authorization': `Bearer ${data.access_token}`,
+        },
+      });
+
+      if (userResponse.ok) {
+        const userData = await userResponse.json();
+        setUser(userData);
+        await AsyncStorage.setItem('@auth:user', JSON.stringify(userData));
+      }
     } catch (error) {
       console.error('Error refreshing token:', error);
-      // If refresh fails, sign out user
       await signOut();
     }
   }
@@ -92,16 +122,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const data: AuthResponse = await response.json();
 
+      // Buscar dados completos do usuário
+      const userResponse = await fetch(`${API_URL}/auth/me`, {
+        headers: {
+          'Authorization': `Bearer ${data.access_token}`,
+        },
+      });
+
+      if (!userResponse.ok) {
+        throw new Error('Erro ao buscar dados do usuário');
+      }
+
+      const userData = await userResponse.json();
+
       await Promise.all([
         AsyncStorage.setItem('@auth:token', data.access_token),
         AsyncStorage.setItem('@auth:refreshToken', data.refresh_token),
-        AsyncStorage.setItem('@auth:user', JSON.stringify(data.user)),
+        AsyncStorage.setItem('@auth:user', JSON.stringify(userData)),
       ]);
 
       setToken(data.access_token);
       setRefreshToken(data.refresh_token);
-      setUser(data.user);
-      router.replace('/');
+      setUser(userData);
+      router.replace('/(tabs)');
     } catch (error) {
       throw error;
     } finally {

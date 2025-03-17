@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   Image,
   StyleSheet,
@@ -13,6 +12,8 @@ import {
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/auth';
+import FormInput from '../../components/FormInput';
+import { validateLoginForm } from '../../utils/validations';
 
 export default function LoginScreen() {
   const { signIn } = useAuth();
@@ -23,14 +24,23 @@ export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string | null>>({});
+
+  const validateForm = () => {
+    const validationErrors = validateLoginForm(credentials);
+    setErrors(validationErrors);
+    return !Object.values(validationErrors).some(error => error !== null);
+  };
 
   const handleLogin = async () => {
+    if (!validateForm()) return;
+
     setLoading(true);
     setError(null);
 
     try {
       await signIn(credentials);
-      router.replace('/');
+      router.replace('/perfil');
     } catch (error) {
       setError('Erro ao fazer login. Verifique suas credenciais.');
     } finally {
@@ -54,31 +64,29 @@ export default function LoginScreen() {
         <Text style={styles.title}>Faça seu Login</Text>
 
         <View style={styles.inputContainer}>
-          <View style={styles.inputWrapper}>
-            <Ionicons name="person-outline" size={20} color="#666" style={styles.inputIcon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Usuário, email ou matrícula"
-              value={credentials.email}
-              onChangeText={(text) => setCredentials(prev => ({ ...prev, email: text }))}
-              autoCapitalize="none"
-              keyboardType="email-address"
-            />
-          </View>
+          <FormInput
+            icon="person-outline"
+            placeholder="Usuário, email ou matrícula"
+            value={credentials.email}
+            onChangeText={(text) => setCredentials(prev => ({ ...prev, email: text }))}
+            autoCapitalize="none"
+            keyboardType="email-address"
+            error={errors.email}
+          />
 
-          <View style={styles.inputWrapper}>
-            <Ionicons name="lock-closed-outline" size={20} color="#666" style={styles.inputIcon} />
-            <TextInput
-              style={[styles.input, { flex: 1 }]}
-              placeholder="Senha"
-              value={credentials.password}
-              onChangeText={(text) => setCredentials(prev => ({ ...prev, password: text }))}
-              secureTextEntry={!showPassword}
-            />
-            <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-              <Ionicons name={showPassword ? "eye-outline" : "eye-off-outline"} size={20} color="#666" />
-            </TouchableOpacity>
-          </View>
+          <FormInput
+            icon="lock-closed-outline"
+            placeholder="Senha"
+            value={credentials.password}
+            onChangeText={(text) => setCredentials(prev => ({ ...prev, password: text }))}
+            secureTextEntry={!showPassword}
+            error={errors.password}
+            rightElement={
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                <Ionicons name={showPassword ? "eye-outline" : "eye-off-outline"} size={20} color="#666" />
+              </TouchableOpacity>
+            }
+          />
         </View>
 
         <TouchableOpacity onPress={() => router.push('/')}>
@@ -156,30 +164,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: '100%',
     gap: 16,
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 25,
-    paddingHorizontal: 15,
-    height: 50,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-  inputIcon: {
-    marginRight: 10,
-  },
-  input: {
-    flex: 1,
-    height: '100%',
-    color: '#333',
   },
   eyeIcon: {
     padding: 10,
