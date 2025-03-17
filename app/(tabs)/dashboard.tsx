@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import { MessageCircle } from 'lucide-react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import axios from 'axios';
 import Header from '../../components/Header';
 import StoreCard from '../../components/StoreCard';
 
@@ -13,47 +13,70 @@ interface Store {
 }
 
 export default function HomePage() {
-  const mockStores: Store[] = [
-    { id: 1, name: "Mini Kalzone", logoUrl: "https://via.placeholder.com/150", isOpen: true },
-    { id: 2, name: "Top's", logoUrl: "https://via.placeholder.com/150", isOpen: true },
-    { id: 3, name: "Bebelu", logoUrl: "https://via.placeholder.com/150", isOpen: true },
-    { id: 4, name: "Nostra Gula", logoUrl: "https://via.placeholder.com/150", isOpen: false },
-    { id: 5, name: "Casa do Pão de Queijo", logoUrl: "https://via.placeholder.com/150", isOpen: true },
-    { id: 6, name: "Hand full", logoUrl: "https://via.placeholder.com/150", isOpen: true },
-    { id: 7, name: "Go Coffee", logoUrl: "https://via.placeholder.com/150", isOpen: false },
-  ];
+  const [stores, setStores] = useState<Store[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchText, setSearchText] = useState('');
 
-  const openStores = mockStores.filter(store => store.isOpen);
-  const closedStores = mockStores.filter(store => !store.isOpen);
+  useEffect(() => {
+    async function fetchStores() {
+      try {
+        const response = await axios.get('http://localhost:3000/stores');
+        setStores(response.data);
+      } catch (err) {
+        setError('Erro ao carregar os estabelecimentos.');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchStores();
+  }, []);
+
+  // Filtra as lojas com base no texto da busca
+  const filteredStores = stores.filter(store =>
+    store.name.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  const openStores = filteredStores.filter(store => store.isOpen);
+  const closedStores = filteredStores.filter(store => !store.isOpen);
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header />
-      
+      <Header searchText={searchText} setSearchText={setSearchText} />
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.banner}>
-          <Text style={styles.bannerText}>
-            Faça seu pedido agora sem pegar filas!
-          </Text>
+          <Text style={styles.bannerText}>Faça seu pedido agora sem pegar filas!</Text>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Estabelecimentos Abertos</Text>
-          {openStores.map(store => (
-            <StoreCard key={store.id} {...store} />
-          ))}
-        </View>
+        {loading ? (
+          <ActivityIndicator size="large" color="#f97316" />
+        ) : error ? (
+          <Text style={styles.errorText}>{error}</Text>
+        ) : (
+          <>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Estabelecimentos Abertos</Text>
+              {openStores.length > 0 ? (
+                openStores.map(store => <StoreCard key={store.id} {...store} />)
+              ) : (
+                <Text style={styles.noStoresText}>Nenhum estabelecimento encontrado.</Text>
+              )}
+            </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Estabelecimentos Fechados</Text>
-          {closedStores.map(store => (
-            <StoreCard key={store.id} {...store} />
-          ))}
-        </View>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Estabelecimentos Fechados</Text>
+              {closedStores.length > 0 ? (
+                closedStores.map(store => <StoreCard key={store.id} {...store} />)
+              ) : (
+                <Text style={styles.noStoresText}>Nenhum estabelecimento encontrado.</Text>
+              )}
+            </View>
+          </>
+        )}
 
         <View style={styles.spacer} />
       </ScrollView>
-
     </SafeAreaView>
   );
 }
@@ -88,23 +111,17 @@ const styles = StyleSheet.create({
     color: '#f97316',
     marginBottom: 16,
   },
+  noStoresText: {
+    fontSize: 16,
+    color: '#999',
+    textAlign: 'center',
+  },
+  errorText: {
+    fontSize: 16,
+    color: 'red',
+    textAlign: 'center',
+  },
   spacer: {
     height: 80,
-  },
-  fabButton: {
-    position: 'absolute',
-    bottom: 24,
-    right: 24,
-    backgroundColor: '#f97316',
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#f97316',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
   },
 });

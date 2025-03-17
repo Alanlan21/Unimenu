@@ -1,16 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import { Search, User, ShoppingCart } from 'lucide-react-native';
+import { Search, User, ShoppingCart, X } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 
-export default function Header() {
+// Definindo o tipo das props do Header
+interface HeaderProps {
+  searchText: string;
+  setSearchText: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export default function Header({ searchText, setSearchText }: HeaderProps) {
   const router = useRouter();
+  const clearSearch = () => {
+    setSearchText('');
+  };
   return (
 <View style={styles.container}> 
   <View style={styles.topRow}>
     <View style={styles.logoContainer}>
       <Image
-        source={require('../assets/images/unimenu 1.png')} 
+        source={require('../assets/images/unimenu1.png')} 
         style={styles.logo}
         resizeMode="contain"
       />
@@ -22,9 +31,18 @@ export default function Header() {
             style={styles.searchInput}
             placeholder="Busque por um item ou estabelecimen..."
             placeholderTextColor="#9ca3af"
+            value={searchText}
+            onChangeText={setSearchText}
           />
+           {searchText.length > 0 && (
+            <TouchableOpacity 
+              onPress={clearSearch}
+              style={styles.clearButton}
+            >
+              <X size={18} color="#9ca3af" />
+            </TouchableOpacity>
+          )}
         </View>
-
         <TouchableOpacity style={styles.userIconButton}>
             <User size={24} color="#f97316" />
           </TouchableOpacity>
@@ -90,6 +108,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#1f2937',
     paddingVertical: 8,
+  },
+  clearButton: {
+    padding: 4,
+    marginRight: 4,
   },
   userIconButton: {
     padding: 4,
