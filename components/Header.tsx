@@ -15,7 +15,7 @@ export default function Header() {
   <View style={styles.topRow}>
     <View style={styles.logoContainer}>
       <Image
-        source={require('../assets/images/unimenu 1.png')} 
+        source={require('../assets/images/unimenu1.png')} 
         style={styles.logo}
         resizeMode="contain"
       />
