@@ -155,12 +155,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function signUp(data: RegisterData) {
     try {
       setLoading(true);
+
+      // Formatar a data de nascimento para o formato ISO
+      const [day, month, year] = data.birthDate.split('/');
+      const formattedBirthDate = `${year}-${month}-${day}`;
+
+      // Remover caracteres especiais do CPF e telefone
+      const cleanCPF = data.cpf.replace(/\D/g, '');
+      const cleanPhone = data.phone.replace(/\D/g, '');
+
+      const formattedData = {
+        ...data,
+        birthDate: formattedBirthDate,
+        cpf: cleanCPF,
+        phone: cleanPhone,
+      };
+
+      console.log('Dados formatados:', formattedData);
+
       const response = await fetch(`${API_URL}/users/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(formattedData),
       });
 
       if (!response.ok) {
@@ -171,6 +189,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // After successful registration, automatically sign in
       await signIn({ email: data.email, password: data.password });
     } catch (error) {
+      console.error('Erro detalhado:', error);
       throw error;
     } finally {
       setLoading(false);

@@ -8,11 +8,13 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Animated,
 } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/auth';
 import FormInput from '../../components/FormInput';
+import LoadingOverlay from '../../components/LoadingOverlay';
 import { validateLoginForm } from '../../utils/validations';
 
 export default function LoginScreen() {
@@ -25,6 +27,32 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string | null>>({});
+  const [shake] = useState(new Animated.Value(0));
+
+  const shakeAnimation = () => {
+    Animated.sequence([
+      Animated.timing(shake, {
+        toValue: 10,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+      Animated.timing(shake, {
+        toValue: -10,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+      Animated.timing(shake, {
+        toValue: 10,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+      Animated.timing(shake, {
+        toValue: 0,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
 
   const validateForm = () => {
     const validationErrors = validateLoginForm(credentials);
@@ -33,16 +61,20 @@ export default function LoginScreen() {
   };
 
   const handleLogin = async () => {
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      shakeAnimation();
+      return;
+    }
 
     setLoading(true);
     setError(null);
 
     try {
       await signIn(credentials);
-      router.replace('/perfil');
+      router.replace('/(tabs)');
     } catch (error) {
       setError('Erro ao fazer login. Verifique suas credenciais.');
+      shakeAnimation();
     } finally {
       setLoading(false);
     }
@@ -61,76 +93,108 @@ export default function LoginScreen() {
           />
         </View>
 
-        <Text style={styles.title}>Faça seu Login</Text>
+        <Animated.View style={[styles.formContainer, { transform: [{ translateX: shake }] }]}>
+          <Text style={styles.title}>Faça seu Login</Text>
 
-        <View style={styles.inputContainer}>
-          <FormInput
-            icon="person-outline"
-            placeholder="Usuário, email ou matrícula"
-            value={credentials.email}
-            onChangeText={(text) => setCredentials(prev => ({ ...prev, email: text }))}
-            autoCapitalize="none"
-            keyboardType="email-address"
-            error={errors.email}
-          />
+          <View style={styles.inputContainer}>
+            <FormInput
+              icon="person-outline"
+              placeholder="Usuário, email ou matrícula"
+              value={credentials.email}
+              onChangeText={(text) => {
+                setCredentials(prev => ({ ...prev, email: text }));
+                setError(null);
+                setErrors(prev => ({ ...prev, email: null }));
+              }}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              error={errors.email}
+              editable={!loading}
+            />
 
-          <FormInput
-            icon="lock-closed-outline"
-            placeholder="Senha"
-            value={credentials.password}
-            onChangeText={(text) => setCredentials(prev => ({ ...prev, password: text }))}
-            secureTextEntry={!showPassword}
-            error={errors.password}
-            rightElement={
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-                <Ionicons name={showPassword ? "eye-outline" : "eye-off-outline"} size={20} color="#666" />
-              </TouchableOpacity>
-            }
-          />
-        </View>
+            <FormInput
+              icon="lock-closed-outline"
+              placeholder="Senha"
+              value={credentials.password}
+              onChangeText={(text) => {
+                setCredentials(prev => ({ ...prev, password: text }));
+                setError(null);
+                setErrors(prev => ({ ...prev, password: null }));
+              }}
+              secureTextEntry={!showPassword}
+              error={errors.password}
+              editable={!loading}
+              rightElement={
+                <TouchableOpacity 
+                  onPress={() => setShowPassword(!showPassword)} 
+                  style={styles.eyeIcon}
+                  disabled={loading}>
+                  <Ionicons 
+                    name={showPassword ? "eye-outline" : "eye-off-outline"} 
+                    size={20} 
+                    color={loading ? "#999" : "#666"} 
+                  />
+                </TouchableOpacity>
+              }
+            />
+          </View>
 
-        <TouchableOpacity onPress={() => router.push('/')}>
-          <Text style={styles.forgotPassword}>Esqueci minha senha</Text>
-        </TouchableOpacity>
-
-        {error && (
-          <Text style={styles.errorText}>{error}</Text>
-        )}
-
-        <TouchableOpacity
-          style={[styles.loginButton, loading && styles.loginButtonDisabled]}
-          onPress={handleLogin}
-          disabled={loading}>
-          <Text style={styles.loginButtonText}>
-            {loading ? 'Entrando...' : 'Entrar'}
-          </Text>
-        </TouchableOpacity>
-
-        <View style={styles.divider}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>ou</Text>
-          <View style={styles.dividerLine} />
-        </View>
-
-        <TouchableOpacity style={styles.googleButton}>
-          <Image
-            source={{ uri: 'https://www.google.com/favicon.ico' }}
-            style={styles.googleIcon}
-          />
-          <Text style={styles.googleButtonText}>Entrar com Google</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.staffButton}>
-          <Text style={styles.staffButtonText}>Login para funcionários</Text>
-        </TouchableOpacity>
-
-        <View style={styles.registerContainer}>
-          <Text style={styles.registerText}>Não tem uma conta? </Text>
-          <TouchableOpacity onPress={() => router.push('/register')}>
-            <Text style={styles.registerLink}>Cadastre-se</Text>
+          <TouchableOpacity 
+            onPress={() => router.push('/')}
+            disabled={loading}>
+            <Text style={[styles.forgotPassword, loading && styles.disabledText]}>
+              Esqueci minha senha
+            </Text>
           </TouchableOpacity>
-        </View>
+
+          {error && (
+            <Text style={styles.errorText}>{error}</Text>
+          )}
+
+          <TouchableOpacity
+            style={[styles.loginButton, loading && styles.loginButtonDisabled]}
+            onPress={handleLogin}
+            disabled={loading}>
+            <Text style={styles.loginButtonText}>
+              {loading ? 'Entrando...' : 'Entrar'}
+            </Text>
+          </TouchableOpacity>
+
+          <View style={styles.divider}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>ou</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          <TouchableOpacity 
+            style={[styles.googleButton, loading && styles.buttonDisabled]}
+            disabled={loading}>
+            <Image
+              source={{ uri: 'https://www.google.com/favicon.ico' }}
+              style={styles.googleIcon}
+            />
+            <Text style={styles.googleButtonText}>Entrar com Google</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={[styles.staffButton, loading && styles.buttonDisabled]}
+            disabled={loading}>
+            <Text style={styles.staffButtonText}>Login para funcionários</Text>
+          </TouchableOpacity>
+
+          <View style={styles.registerContainer}>
+            <Text style={styles.registerText}>Não tem uma conta? </Text>
+            <TouchableOpacity 
+              onPress={() => router.push('/register')}
+              disabled={loading}>
+              <Text style={[styles.registerLink, loading && styles.disabledText]}>
+                Cadastre-se
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
       </ScrollView>
+      {loading && <LoadingOverlay />}
     </KeyboardAvoidingView>
   );
 }
@@ -153,6 +217,9 @@ const styles = StyleSheet.create({
   logo: {
     width: 120,
     height: 120,
+  },
+  formContainer: {
+    width: '100%',
   },
   title: {
     fontSize: 24,
@@ -179,6 +246,9 @@ const styles = StyleSheet.create({
     color: '#FF3B30',
     textAlign: 'center',
     marginBottom: 20,
+    backgroundColor: 'rgba(255, 59, 48, 0.1)',
+    padding: 10,
+    borderRadius: 8,
   },
   loginButton: {
     backgroundColor: '#FF6B00',
@@ -189,6 +259,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   loginButtonDisabled: {
+    opacity: 0.7,
+  },
+  buttonDisabled: {
     opacity: 0.7,
   },
   loginButtonText: {
@@ -255,5 +328,8 @@ const styles = StyleSheet.create({
   registerLink: {
     color: '#FF6B00',
     fontWeight: 'bold',
+  },
+  disabledText: {
+    opacity: 0.7,
   },
 });
