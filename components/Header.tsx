@@ -3,13 +3,17 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'reac
 import { Search, User, ShoppingCart, X } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 
-export default function Header() {
+// Definindo o tipo das props do Header
+interface HeaderProps {
+  searchText: string;
+  setSearchText: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export default function Header({ searchText, setSearchText }: HeaderProps) {
   const router = useRouter();
-  const [searchText, setSearchText] = useState('');
   const clearSearch = () => {
     setSearchText('');
   };
-
   return (
 <View style={styles.container}> 
   <View style={styles.topRow}>
