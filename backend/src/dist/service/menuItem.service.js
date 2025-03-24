@@ -36,6 +36,16 @@ let MenuItemService = class MenuItemService {
         });
         return await this.menuItemRepository.save(menuItem);
     }
+    async findByStore(storeId) {
+        const store = await this.storeRepository.findOneBy({ id: storeId });
+        if (!store) {
+            throw new common_1.NotFoundException('Store not found');
+        }
+        return this.menuItemRepository.find({
+            where: { store: { id: storeId } },
+            relations: ['store'],
+        });
+    }
     async findAll() {
         return await this.menuItemRepository.find();
     }

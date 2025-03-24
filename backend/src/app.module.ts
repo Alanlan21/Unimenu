@@ -29,8 +29,9 @@ import { ProductOrderModule } from './module/product-order.module';
         return isMySQL
           ? {
               type: 'mysql',
+              logging: true,
               host: configService.get<string>('DB_HOST'),
-              port: parseInt(configService.get<string>('DB_PORT'), 10) || 3306,
+              port: parseInt(configService.get<string>('DB_PORT'), 10) || 3307,
               username: configService.get<string>('DB_USERNAME'),
               password: configService.get<string>('DB_PASSWORD'),
               database: configService.get<string>('DB_NAME'),
@@ -39,7 +40,8 @@ import { ProductOrderModule } from './module/product-order.module';
             }
           : {
               type: 'sqlite',
-              database: configService.get<string>('SQLITE_DB_PATH') || ':memory:',
+              database:
+                configService.get<string>('SQLITE_DB_PATH') || ':memory:',
               autoLoadEntities: true,
               synchronize: true,
             };
@@ -65,5 +67,3 @@ export class AppModule {
     Logger.log(`Stripe Secret Key: ${stripeSecretKey}`);
   }
 }
-
-

@@ -33,6 +33,10 @@ __decorate([
     __metadata("design:type", Number)
 ], MenuItem.prototype, "price", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], MenuItem.prototype, "imgUrl", void 0);
+__decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], MenuItem.prototype, "category", void 0);

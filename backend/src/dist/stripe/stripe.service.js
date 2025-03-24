@@ -21,7 +21,7 @@ let StripeService = class StripeService {
             throw new Error('A chave secreta do Stripe não está definida.');
         }
         this.stripe = new stripe_1.default(secretKey, {
-            apiVersion: '2024-09-30.acacia',
+            apiVersion: '2025-02-24.acacia',
         });
     }
     async createPaymentIntent(amount, currency) {

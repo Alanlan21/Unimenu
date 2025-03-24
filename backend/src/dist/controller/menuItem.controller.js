@@ -23,6 +23,9 @@ let MenuItemController = class MenuItemController {
     async create(createMenuItemDto) {
         return await this.menuItemService.create(createMenuItemDto);
     }
+    async findByStore(storeId) {
+        return await this.menuItemService.findByStore(storeId);
+    }
     async findAll() {
         return await this.menuItemService.findAll();
     }
@@ -44,6 +47,13 @@ __decorate([
     __metadata("design:paramtypes", [menuItem_dto_1.CreateMenuItemDto]),
     __metadata("design:returntype", Promise)
 ], MenuItemController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)('stores/:storeId'),
+    __param(0, (0, common_1.Param)('storeId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], MenuItemController.prototype, "findByStore", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),

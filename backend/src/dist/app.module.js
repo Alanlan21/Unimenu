@@ -49,8 +49,9 @@ exports.AppModule = AppModule = __decorate([
                     return isMySQL
                         ? {
                             type: 'mysql',
+                            logging: true,
                             host: configService.get('DB_HOST'),
-                            port: parseInt(configService.get('DB_PORT'), 10) || 3306,
+                            port: parseInt(configService.get('DB_PORT'), 10) || 3307,
                             username: configService.get('DB_USERNAME'),
                             password: configService.get('DB_PASSWORD'),
                             database: configService.get('DB_NAME'),

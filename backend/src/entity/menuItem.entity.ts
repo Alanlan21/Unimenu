@@ -1,4 +1,4 @@
-import { Col } from 'sequelize/types/utils';
+
 import { ProductOrder } from './product-order.entity';
 import { Store } from './store.entity';
 import {
@@ -23,6 +23,9 @@ export class MenuItem {
 
   @Column('decimal')
   price: number;
+
+  @Column({nullable: true })
+  imgUrl: string; 
 
   @Column()
   category: string; // lactose, gluten, vegano

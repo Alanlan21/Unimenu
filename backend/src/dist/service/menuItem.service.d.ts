@@ -7,6 +7,7 @@ export declare class MenuItemService {
     private storeRepository;
     constructor(menuItemRepository: Repository<MenuItem>, storeRepository: Repository<Store>);
     create(createMenuItemDto: CreateMenuItemDto): Promise<MenuItem>;
+    findByStore(storeId: number): Promise<MenuItem[]>;
     findAll(): Promise<MenuItem[]>;
     findOne(id: number): Promise<MenuItem>;
     update(id: number, updateData: Partial<MenuItem>): Promise<MenuItem>;
