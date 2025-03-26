@@ -16,6 +16,7 @@ import { User } from '../entity/user.entity';
 
 @Controller('auth')
 export class AuthController {
+  httpContext: any;
   constructor(
     private authService: AuthService,
     private userService: UserService, // Adicionei o UserService
@@ -23,22 +24,17 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
+    console.log('Backend - Login recebido:', loginDto);
+    console.log('Backend - Origem:', this.httpContext?.getRequest()?.headers.origin);
     try {
-      const user = await this.authService.validateUser(
-        loginDto.email, 
-        loginDto.password
-      );
-      
-      return this.authService.login(user);
+      const user = await this.authService.validateUser(loginDto.email, loginDto.password);
+      console.log('Backend - Usuário validado:', user);
+      const result = await this.authService.login(user);
+      console.log('Backend - Login sucesso:', result);
+      return result;
     } catch (error) {
-      // Log do erro no servidor
-      console.error('Login error:', error);
-
-      // Lança uma exceção HTTP com detalhes
-      throw new HttpException(
-        error.message || 'Erro de autenticação', 
-        HttpStatus.UNAUTHORIZED
-      );
+      console.log('Backend - Login falhou:', error.message);
+      throw new HttpException(error.message || 'Erro de autenticação', HttpStatus.UNAUTHORIZED);
     }
   }
 

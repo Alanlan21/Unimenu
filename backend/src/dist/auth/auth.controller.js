@@ -24,12 +24,17 @@ let AuthController = class AuthController {
         this.userService = userService;
     }
     async login(loginDto) {
+        console.log('Backend - Login recebido:', loginDto);
+        console.log('Backend - Origem:', this.httpContext?.getRequest()?.headers.origin);
         try {
             const user = await this.authService.validateUser(loginDto.email, loginDto.password);
-            return this.authService.login(user);
+            console.log('Backend - Usuário validado:', user);
+            const result = await this.authService.login(user);
+            console.log('Backend - Login sucesso:', result);
+            return result;
         }
         catch (error) {
-            console.error('Login error:', error);
+            console.log('Backend - Login falhou:', error.message);
             throw new common_1.HttpException(error.message || 'Erro de autenticação', common_1.HttpStatus.UNAUTHORIZED);
         }
     }

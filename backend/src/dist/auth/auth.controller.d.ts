@@ -5,6 +5,7 @@ import { User } from '../entity/user.entity';
 export declare class AuthController {
     private authService;
     private userService;
+    httpContext: any;
     constructor(authService: AuthService, userService: UserService);
     login(loginDto: LoginDto): Promise<{
         access_token: string;

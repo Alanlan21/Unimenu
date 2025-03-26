@@ -28,21 +28,10 @@ export class UserController {
 
   @Post('register')
   async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+    console.log('Registro recebido:', createUserDto);
     const validatedUser = await this.userService.create(createUserDto);
+    console.log('Registro sucesso:', validatedUser);
     return validatedUser;
-  }
-
-  @Post('login')
-  async login(@Body() loginDto: CreateLoginDto): Promise<any> {
-    try {
-      const user = await this.authService.validateUser(
-        loginDto.email,
-        loginDto.password,
-      );
-      return this.authService.login(user);
-    } catch (error) {
-      throw new HttpException('Credenciais inválidas', HttpStatus.UNAUTHORIZED);
-    }
   }
 
   @Get()
