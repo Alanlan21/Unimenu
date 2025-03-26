@@ -3,60 +3,46 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import type { AuthContextType, LoginCredentials, RegisterData, AuthResponse } from '../types/auth';
 
+console.log('React instance in auth.tsx:', React);
+console.log('React version in auth.tsx:', React.version);
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const API_URL = 'http://localhost:3000';
-
-// Token refresh interval (5 minutes before expiration)
-const REFRESH_INTERVAL = 25 * 60 * 1000; // 25 minutes
+const API_URL = 'http://192.168.2.100:3000';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthResponse['user'] | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadStoredAuth();
   }, []);
 
-  // Set up refresh token interval
-  useEffect(() => {
-    if (refreshToken) {
-      const interval = setInterval(refreshAccessToken, REFRESH_INTERVAL);
-      return () => clearInterval(interval);
-    }
-  }, [refreshToken]);
-
   async function loadStoredAuth() {
     try {
-      const [storedToken, storedRefreshToken, storedUser] = await Promise.all([
+      const [storedToken, storedUser] = await Promise.all([
         AsyncStorage.getItem('@auth:token'),
-        AsyncStorage.getItem('@auth:refreshToken'),
         AsyncStorage.getItem('@auth:user'),
       ]);
 
-      if (storedToken && storedRefreshToken && storedUser) {
+      if (storedToken && storedUser) {
         setToken(storedToken);
-        setRefreshToken(storedRefreshToken);
         setUser(JSON.parse(storedUser));
 
         // Carregar dados atualizados do usuário
-        if (storedToken) {
-          try {
-            const response = await fetch(`${API_URL}/auth/me`, {
-              headers: {
-                'Authorization': `Bearer ${storedToken}`,
-              },
-            });
-            if (response.ok) {
-              const userData = await response.json();
-              setUser(userData);
-              await AsyncStorage.setItem('@auth:user', JSON.stringify(userData));
-            }
-          } catch (error) {
-            console.error('Error fetching user data:', error);
+        try {
+          const response = await fetch(`${API_URL}/auth/me`, {
+            headers: {
+              'Authorization': `Bearer ${storedToken}`,
+            },
+          });
+          if (response.ok) {
+            const userData = await response.json();
+            setUser(userData);
+            await AsyncStorage.setItem('@auth:user', JSON.stringify(userData));
           }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
         }
       }
     } catch (error) {
@@ -66,47 +52,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  async function refreshAccessToken() {
-    try {
-      if (!refreshToken) return;
-
-      const response = await fetch(`${API_URL}/auth/refresh`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ refreshToken }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to refresh token');
-      }
-
-      const data = await response.json();
-      await AsyncStorage.setItem('@auth:token', data.access_token);
-      setToken(data.access_token);
-
-      // Atualizar dados do usuário após refresh do token
-      const userResponse = await fetch(`${API_URL}/auth/me`, {
-        headers: {
-          'Authorization': `Bearer ${data.access_token}`,
-        },
-      });
-
-      if (userResponse.ok) {
-        const userData = await userResponse.json();
-        setUser(userData);
-        await AsyncStorage.setItem('@auth:user', JSON.stringify(userData));
-      }
-    } catch (error) {
-      console.error('Error refreshing token:', error);
-      await signOut();
-    }
-  }
-
   async function signIn(credentials: LoginCredentials) {
     try {
       setLoading(true);
+      console.log('SignIn - Enviando pra:', `${API_URL}/auth/login`);
+      console.log('SignIn - Dados:', credentials);
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: {
@@ -115,12 +65,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify(credentials),
       });
 
+      console.log('SignIn - Status:', response.status);
       if (!response.ok) {
         const errorData = await response.json();
+        console.log('SignIn - Erro:', errorData);
         throw new Error(errorData.message || 'Credenciais inválidas');
       }
 
       const data: AuthResponse = await response.json();
+      console.log('SignIn - Resposta:', data);
 
       // Buscar dados completos do usuário
       const userResponse = await fetch(`${API_URL}/auth/me`, {
@@ -129,23 +82,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
       });
 
+      console.log('SignIn - /auth/me Status:', userResponse.status);
       if (!userResponse.ok) {
+        const errorData = await userResponse.json();
+        console.log('SignIn - /auth/me Erro:', errorData);
         throw new Error('Erro ao buscar dados do usuário');
       }
 
       const userData = await userResponse.json();
+      console.log('SignIn - /auth/me Resposta:', userData);
 
       await Promise.all([
         AsyncStorage.setItem('@auth:token', data.access_token),
-        AsyncStorage.setItem('@auth:refreshToken', data.refresh_token),
         AsyncStorage.setItem('@auth:user', JSON.stringify(userData)),
       ]);
 
       setToken(data.access_token);
-      setRefreshToken(data.refresh_token);
       setUser(userData);
       router.replace('/(tabs)');
     } catch (error) {
+      if (error instanceof Error) {
+        console.error('SignIn - Erro:', error.message);
+      } else {
+        console.error('SignIn - Erro:', error);
+      }
       throw error;
     } finally {
       setLoading(false);
@@ -171,7 +131,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         phone: cleanPhone,
       };
 
-      console.log('Dados formatados:', formattedData);
+      console.log('SignUp - Dados formatados:', formattedData);
 
       const response = await fetch(`${API_URL}/users/register`, {
         method: 'POST',
@@ -181,15 +141,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify(formattedData),
       });
 
+      console.log('SignUp - Status:', response.status);
       if (!response.ok) {
         const errorData = await response.json();
+        console.log('SignUp - Erro:', errorData);
         throw new Error(errorData.message || 'Erro no cadastro');
       }
+
+      const responseData = await response.json();
+      console.log('SignUp - Resposta:', responseData);
 
       // After successful registration, automatically sign in
       await signIn({ email: data.email, password: data.password });
     } catch (error) {
-      console.error('Erro detalhado:', error);
+      console.error('SignUp - Erro detalhado:', error);
       throw error;
     } finally {
       setLoading(false);
@@ -211,12 +176,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       await Promise.all([
         AsyncStorage.removeItem('@auth:token'),
-        AsyncStorage.removeItem('@auth:refreshToken'),
         AsyncStorage.removeItem('@auth:user'),
       ]);
       
       setToken(null);
-      setRefreshToken(null);
       setUser(null);
       router.replace('/(auth)/login');
     } catch (error) {

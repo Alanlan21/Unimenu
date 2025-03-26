@@ -6,16 +6,19 @@
   "scripts": {
     "dev": "EXPO_NO_TELEMETRY=1 expo start",
     "build:web": "expo export --platform web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "preinstall": "npx npm-force-resolutions",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
-    "@react-native-async-storage/async-storage": "1.21.0",
-    "@react-native-picker/picker": "^2.11.0",
+    "@react-native-async-storage/async-storage": "1.23.1",
+    "@react-native-picker/picker": "2.9.0",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
-    "axios": "^1.8.3",
-    "expo": "52.0.33",
+    "axios": "^1.8.4",
+    "expo": "~52.0.38",
     "expo-blur": "^14.0.3",
     "expo-constants": "^17.0.5",
     "expo-font": "^13.0.3",
@@ -23,29 +26,41 @@
     "expo-image": "~2.0.6",
     "expo-linear-gradient": "^14.0.2",
     "expo-linking": "^7.0.5",
-    "expo-router": "4.0.17",
+    "expo-router": "~4.0.19",
     "expo-splash-screen": "^0.29.21",
     "expo-status-bar": "^2.0.1",
     "expo-symbols": "^0.2.2",
     "expo-system-ui": "^4.0.7",
     "expo-web-browser": "^14.0.2",
-    "lucide-react-native": "^0.476.0",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "react-native": "0.76.6",
-    "react-native-gesture-handler": "^2.23.0",
+    "lucide-react-native": "^0.483.0",
+    "phosphor-react-native": "^2.3.1",
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0",
+    "react-native": "0.76.7",
+    "react-native-gesture-handler": "~2.20.2",
     "react-native-mask-input": "^1.2.3",
-    "react-native-reanimated": "^3.16.7",
+    "react-native-reanimated": "~3.16.1",
     "react-native-safe-area-context": "4.12.0",
-    "react-native-screens": "^4.4.0",
+    "react-native-screens": "~4.4.0",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "^0.19.13",
-    "react-native-webview": "13.12.5"
+    "react-native-webview": "13.12.5",
+    "expo-dev-client": "~5.0.14",
+    "react-native-svg": "15.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@types/react": "~18.3.12",
     "@types/react-native": "^0.73.0",
+    "npm-force-resolutions": "^0.0.10",
     "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "resolutions": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
   }
 }
