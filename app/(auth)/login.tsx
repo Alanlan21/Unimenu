@@ -71,7 +71,7 @@ export default function LoginScreen() {
 
     try {
       await signIn(credentials);
-      router.replace('/(tabs)');
+      router.replace('/dashboard');
     } catch (error) {
       setError('Erro ao fazer login. Verifique suas credenciais.');
       shakeAnimation();
