@@ -6,6 +6,6 @@ export declare class CreateUserDto {
     confirmPassword: string;
     cpf: string;
     phone: string;
-    gender: string;
     birthDate: string;
+    gender: string;
 }

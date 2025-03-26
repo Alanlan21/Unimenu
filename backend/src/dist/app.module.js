@@ -37,7 +37,10 @@ exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            config_1.ConfigModule.forRoot(),
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+                envFilePath: '.env',
+            }),
             typeorm_1.TypeOrmModule.forRootAsync({
                 imports: [config_1.ConfigModule],
                 inject: [config_1.ConfigService],
@@ -46,8 +49,9 @@ exports.AppModule = AppModule = __decorate([
                     return isMySQL
                         ? {
                             type: 'mysql',
+                            logging: true,
                             host: configService.get('DB_HOST'),
-                            port: parseInt(configService.get('DB_PORT'), 10) || 3306,
+                            port: parseInt(configService.get('DB_PORT'), 10) || 3307,
                             username: configService.get('DB_USERNAME'),
                             password: configService.get('DB_PASSWORD'),
                             database: configService.get('DB_NAME'),

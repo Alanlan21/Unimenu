@@ -4,22 +4,22 @@ import { ValidationPipe } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 
 async function bootstrap() {
-  dotenv.config()
+  dotenv.config();
   const app = await NestFactory.create(AppModule);
-  
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
-    })
+    }),
   );
 
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: '*', // Permite todas as origens (pra testes)
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-    credentials: true
+    credentials: true,
   });
 
   const port = process.env.PORT || 3000;

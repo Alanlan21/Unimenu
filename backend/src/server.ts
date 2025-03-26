@@ -1,18 +1,22 @@
-import express from 'express';
-import cors from 'cors'; // Importa o pacote CORS
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const cors_1 = require("cors");
 
-const app = express();
+const app = (0, express_1.default)();
 const port = 5000;
 
-// Ativa o middleware CORS
-app.use(cors());
+// Configurar o CORS para permitir apenas http://localhost:8081
+app.use((0, cors_1.default)({
+  origin: 'http://localhost:8081', // Permite apenas essa origem
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'], // Headers permitidos
+}));
 
-// Outras configurações do seu backend
 app.get('/', (req, res) => {
   res.send('Hello World');
 });
 
-// Inicia o servidor
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });

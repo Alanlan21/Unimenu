@@ -1,8 +1,12 @@
 import { AuthService } from './auth.service';
+import { UserService } from '../service/user.service';
 import { LoginDto } from './dto/login.dto';
+import { User } from '../entity/user.entity';
 export declare class AuthController {
     private authService;
-    constructor(authService: AuthService);
+    private userService;
+    httpContext: any;
+    constructor(authService: AuthService, userService: UserService);
     login(loginDto: LoginDto): Promise<{
         access_token: string;
         user: {
@@ -11,4 +15,5 @@ export declare class AuthController {
             name: any;
         };
     }>;
+    getCurrentUser(req: any): Promise<User>;
 }

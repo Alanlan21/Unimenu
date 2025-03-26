@@ -13,8 +13,8 @@ export declare class UserService {
         confirmPassword: string;
         cpf: string;
         phone: string;
-        gender: string;
         birthDate: string;
+        gender: string;
     } & User>;
     findAll(): Promise<User[]>;
     findOne(id: number): Promise<User>;

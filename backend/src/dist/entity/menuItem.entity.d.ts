@@ -5,6 +5,7 @@ export declare class MenuItem {
     name: string;
     description: string;
     price: number;
+    imgUrl: string;
     category: string;
     store: Store;
     productOrders: ProductOrder[];

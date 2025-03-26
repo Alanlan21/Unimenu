@@ -17,26 +17,18 @@ const common_1 = require("@nestjs/common");
 const user_service_1 = require("../service/user.service");
 const auth_service_1 = require("../auth/auth.service");
 const user_dto_1 = require("../dto/user.dto");
-const login_dto_1 = require("../dto/login.dto");
 let UserController = class UserController {
     constructor(userService, authService) {
         this.userService = userService;
         this.authService = authService;
     }
     async createUser(createUserDto) {
+        console.log('Registro recebido:', createUserDto);
         const validatedUser = await this.userService.create(createUserDto);
+        console.log('Registro sucesso:', validatedUser);
         return validatedUser;
     }
-    async login(loginDto) {
-        try {
-            const user = await this.authService.validateUser(loginDto.email, loginDto.password);
-            return this.authService.login(user);
-        }
-        catch (error) {
-            throw new common_1.HttpException('Credenciais inválidas', common_1.HttpStatus.UNAUTHORIZED);
-        }
-    }
-    findAll() {
+    async findAll() {
         return this.userService.findAll();
     }
     findOne(id) {
@@ -57,13 +49,6 @@ __decorate([
     __metadata("design:paramtypes", [user_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "createUser", null);
-__decorate([
-    (0, common_1.Post)('login'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [login_dto_1.CreateLoginDto]),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "login", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),

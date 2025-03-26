@@ -13,10 +13,10 @@ async function bootstrap() {
         forbidNonWhitelisted: true,
     }));
     app.enableCors({
-        origin: 'http://localhost:5173',
+        origin: '*',
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-        credentials: true
+        credentials: true,
     });
     const port = process.env.PORT || 3000;
     console.log(`Servidor rodando na porta ${port}`);

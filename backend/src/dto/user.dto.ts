@@ -35,10 +35,11 @@ export class CreateUserDto {
   @IsString()
   phone: string;
 
-  @IsString()
-  gender: string;
-
   @IsNotEmpty()
   @IsDateString()
   birthDate: string;
+
+  @IsString()
+  gender: string;
+
 }

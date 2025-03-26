@@ -48,12 +48,12 @@ __decorate([
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "phone", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "gender", void 0);
-__decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsDateString)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "birthDate", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "gender", void 0);
 //# sourceMappingURL=user.dto.js.map

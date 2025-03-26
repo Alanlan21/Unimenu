@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MenuItem } from '../entity/menuItem.entity';
@@ -31,6 +31,22 @@ export class MenuItemService {
     return await this.menuItemRepository.save(menuItem);
   }
 
+  // retora uma lista de itens associados a uma loja
+  async findByStore(storeId: number): Promise<MenuItem[]> {
+    // Verifica se a loja existe
+    const store = await this.storeRepository.findOneBy({ id: storeId });
+    if (!store) {
+      throw new NotFoundException('Store not found');
+    }
+
+    // Busca os itens do cardápio associados à loja
+    return this.menuItemRepository.find({
+      where: { store: { id: storeId } },
+      relations: ['store'], // Carrega o relacionamento com a loja, se necessário
+    });
+  }
+
+  
   async findAll(): Promise<MenuItem[]> {
     return await this.menuItemRepository.find();
   }
