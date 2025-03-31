@@ -2,12 +2,11 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import type { AuthContextType, LoginCredentials, RegisterData, AuthResponse } from '../types/auth';
+import api from '../utils/api';
 
 console.log('React instance in auth.tsx:', React);
 console.log('React version in auth.tsx:', React.version);
 const AuthContext = createContext<AuthContextType | null>(null);
-
-const API_URL = 'http://192.168.2.100:3000';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthResponse['user'] | null>(null);
@@ -29,18 +28,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
 
-        // Carregar dados atualizados do usuário
         try {
-          const response = await fetch(`${API_URL}/auth/me`, {
+          const response = await api.get('/auth/me', {
             headers: {
               'Authorization': `Bearer ${storedToken}`,
             },
           });
-          if (response.ok) {
-            const userData = await response.json();
-            setUser(userData);
-            await AsyncStorage.setItem('@auth:user', JSON.stringify(userData));
-          }
+          const userData = response.data;
+          setUser(userData);
+          await AsyncStorage.setItem('@auth:user', JSON.stringify(userData));
         } catch (error) {
           console.error('Error fetching user data:', error);
         }
@@ -55,60 +51,61 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function signIn(credentials: LoginCredentials) {
     try {
       setLoading(true);
-      console.log('SignIn - Enviando pra:', `${API_URL}/auth/login`);
+      console.log('SignIn - Enviando pra:', `/auth/login`);
       console.log('SignIn - Dados:', credentials);
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-      });
+      const response = await api.post('/auth/login', credentials);
 
       console.log('SignIn - Status:', response.status);
-      if (!response.ok) {
-        const errorData = await response.json();
+      console.log('SignIn - Resposta completa:', response.data);
+
+      // Aceita status 200 ou 201 como sucesso
+      if (response.status !== 200 && response.status !== 201) {
+        const errorData = response.data;
         console.log('SignIn - Erro:', errorData);
         throw new Error(errorData.message || 'Credenciais inválidas');
       }
 
-      const data: AuthResponse = await response.json();
-      console.log('SignIn - Resposta:', data);
+      const data: AuthResponse = response.data;
+      console.log('SignIn - Dados extraídos:', data);
 
-      // Buscar dados completos do usuário
-      const userResponse = await fetch(`${API_URL}/auth/me`, {
+      const userResponse = await api.get('/auth/me', {
         headers: {
           'Authorization': `Bearer ${data.access_token}`,
         },
       });
 
       console.log('SignIn - /auth/me Status:', userResponse.status);
-      if (!userResponse.ok) {
-        const errorData = await userResponse.json();
+      console.log('SignIn - /auth/me Resposta:', userResponse.data);
+
+      if (userResponse.status !== 200) {
+        const errorData = userResponse.data;
         console.log('SignIn - /auth/me Erro:', errorData);
         throw new Error('Erro ao buscar dados do usuário');
       }
 
-      const userData = await userResponse.json();
-      console.log('SignIn - /auth/me Resposta:', userData);
-
+      const userData = userResponse.data;
+      console.log('SignIn - Salvando no AsyncStorage...');
       await Promise.all([
         AsyncStorage.setItem('@auth:token', data.access_token),
         AsyncStorage.setItem('@auth:user', JSON.stringify(userData)),
       ]);
 
+      console.log('SignIn - Atualizando estado...');
       setToken(data.access_token);
       setUser(userData);
-      router.replace('/(tabs)');
+
+      console.log('SignIn - Redirecionando para /dashboard...');
+      router.replace('/(tabs)/dashboard');
     } catch (error) {
       if (error instanceof Error) {
-        console.error('SignIn - Erro:', error.message);
+        console.error('SignIn - Erro detalhado:', error.message);
       } else {
-        console.error('SignIn - Erro:', error);
+        console.error('SignIn - Erro detalhado:', error);
       }
       throw error;
     } finally {
       setLoading(false);
+      console.log('SignIn - Finalizado');
     }
   }
 
@@ -116,11 +113,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setLoading(true);
 
-      // Formatar a data de nascimento para o formato ISO
       const [day, month, year] = data.birthDate.split('/');
       const formattedBirthDate = `${year}-${month}-${day}`;
-
-      // Remover caracteres especiais do CPF e telefone
       const cleanCPF = data.cpf.replace(/\D/g, '');
       const cleanPhone = data.phone.replace(/\D/g, '');
 
@@ -133,25 +127,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       console.log('SignUp - Dados formatados:', formattedData);
 
-      const response = await fetch(`${API_URL}/users/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formattedData),
-      });
+      const response = await api.post('/users/register', formattedData);
 
       console.log('SignUp - Status:', response.status);
-      if (!response.ok) {
-        const errorData = await response.json();
+      if (response.status !== 201) {
+        const errorData = response.data;
         console.log('SignUp - Erro:', errorData);
         throw new Error(errorData.message || 'Erro no cadastro');
       }
 
-      const responseData = await response.json();
+      const responseData = response.data;
       console.log('SignUp - Resposta:', responseData);
 
-      // After successful registration, automatically sign in
       await signIn({ email: data.email, password: data.password });
     } catch (error) {
       console.error('SignUp - Erro detalhado:', error);
@@ -164,14 +151,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function signOut() {
     try {
       setLoading(true);
-      // Call logout endpoint if needed
       if (token) {
-        await fetch(`${API_URL}/auth/logout`, {
-          method: 'POST',
+        await api.post('/auth/logout', {}, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
-        }).catch(console.error); // Don't throw if request fails
+        }).catch(console.error);
       }
 
       await Promise.all([

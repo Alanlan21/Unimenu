@@ -1,6 +1,8 @@
 import axios from 'axios';
+import Constants from 'expo-constants';
 
-const API_URL = 'http://192.168.2.100:3000';
+// Usa o API_URL do app.json, com fallback pra localhost
+const API_URL = Constants.expoConfig?.extra?.apiUrl || 'http://localhost:3000';
 
 const api = axios.create({
   baseURL: API_URL,
