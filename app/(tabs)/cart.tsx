@@ -26,47 +26,47 @@ export default function CartScreen() {
     }
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Carrinho</Text>
-  
-        <ScrollView style={styles.itemsContainer}>
-          {items.map((item, index) => (
-            <View key={`${item.id}-${index}`} style={styles.cartItem}>
-              <View style={styles.itemInfo}>
-                <Text style={styles.itemName}>{item.quantity}x {item.name}</Text>
-                {item.description && (
-                  <Text style={styles.itemDescription}>Obs: {item.description}</Text>
-                )}
-                <Text style={styles.itemPrice}>
-                  R$ {(item.price * item.quantity).toFixed(2)}
-                </Text>
-              </View>
-  
-              <View style={styles.itemActions}>
-                <TouchableOpacity
-                  style={styles.quantityButton}
-                  onPress={() => updateQuantity(item.id, item.quantity - 1)}
-                >
-                  <Minus size={16} color="#FF6B00" />
-                </TouchableOpacity>
-                <Text style={styles.quantityText}>{item.quantity}</Text>
-                <TouchableOpacity
-                  style={styles.quantityButton}
-                  onPress={() => updateQuantity(item.id, item.quantity + 1)}
-                >
-                  <Plus size={16} color="#FF6B00" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.removeButton}
-                  onPress={() => removeItem(item.id)}
-                >
-                  <Trash2 size={16} color="#FF3B30" />
-                </TouchableOpacity>
-              </View>
-            </View>
-          ))}
-        </ScrollView>
+      <Text style={styles.title}>Carrinho</Text>
 
-        <View style={styles.footer}>
+      <ScrollView style={styles.itemsContainer}>
+        {items.map((item, index) => (
+          <View key={`${item.id}-${index}`} style={styles.cartItem}>
+            <View style={styles.itemInfo}>
+              <Text style={styles.itemName}>{item.quantity}x {item.name}</Text>
+              {item.description && (
+                <Text style={styles.itemDescription}>Obs: {item.description}</Text>
+              )}
+              <Text style={styles.itemPrice}>
+                R$ {(item.price * item.quantity).toFixed(2)}
+              </Text>
+            </View>
+
+            <View style={styles.itemActions}>
+              <TouchableOpacity
+                style={styles.quantityButton}
+                onPress={() => updateQuantity(item.id, item.quantity - 1)}
+              >
+                <Minus size={16} color="#FF6B00" />
+              </TouchableOpacity>
+              <Text style={styles.quantityText}>{item.quantity}</Text>
+              <TouchableOpacity
+                style={styles.quantityButton}
+                onPress={() => updateQuantity(item.id, item.quantity + 1)}
+              >
+                <Plus size={16} color="#FF6B00" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.removeButton}
+                onPress={() => removeItem(item.id, item.description)} // Passa a description
+              >
+                <Trash2 size={16} color="#FF3B30" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
+
+      <View style={styles.footer}>
         <View style={styles.totalContainer}>
           <Text style={styles.totalLabel}>Total</Text>
           <Text style={styles.totalValue}>R$ {total.toFixed(2)}</Text>

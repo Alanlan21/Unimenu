@@ -233,7 +233,7 @@ export default function StorePage() {
                           R$ {(item.price * item.quantity).toFixed(2)}
                         </Text>
                         <TouchableOpacity
-                          onPress={() => removeItem(item.id)}
+                          onPress={() => removeItem(item.id, item.description)} // Passa a description
                           style={styles.removeButton}
                         >
                           <Text style={styles.removeButtonText}>Remover</Text>
@@ -242,7 +242,29 @@ export default function StorePage() {
                     </View>
                   ))}
                 </ScrollView>
-                {/* ... (footer do modal permanece igual) */}
+                <View style={styles.modalFooter}>
+                  <View style={styles.totalRow}>
+                    <Text style={styles.totalLabel}>Subtotal</Text>
+                    <Text style={styles.totalValue}>R$ {total.toFixed(2)}</Text>
+                  </View>
+                  <View style={styles.totalRow}>
+                    <Text style={styles.totalLabel}>Taxa de Serviço</Text>
+                    <Text style={styles.totalValue}>R$ 0.99</Text>
+                  </View>
+                  <View style={styles.totalRow}>
+                    <Text style={styles.totalLabel}>Total</Text>
+                    <Text style={styles.totalValue}>R$ {(total + 0.99).toFixed(2)}</Text>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.checkoutButton}
+                    onPress={() => {
+                      setCartModalVisible(false);
+                      router.push('/(tabs)/cart');
+                    }}
+                  >
+                    <Text style={styles.checkoutButtonText}>Prosseguir para Pagamento</Text>
+                  </TouchableOpacity>
+                </View>
               </>
             )}
           </View>

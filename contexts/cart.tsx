@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+
 export interface CartItem {
   id: number;
   name: string;
@@ -10,7 +11,7 @@ export interface CartItem {
 interface CartContextType {
   items: CartItem[];
   addItem: (item: CartItem) => void;
-  removeItem: (id: number) => void;
+  removeItem: (id: number, description?: string) => void; // Ajustado para aceitar description
   updateQuantity: (id: number, quantity: number) => void;
   total: number;
 }
@@ -22,25 +23,26 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const addItem = (item: CartItem) => {
     setItems((prevItems) => {
-      // Verifica se já existe um item com o mesmo ID e a mesma descrição
       const existingItem = prevItems.find(
         (i) => i.id === item.id && i.description === item.description
       );
       if (existingItem) {
-        // Se existe, aumenta a quantidade
         return prevItems.map((i) =>
           i.id === item.id && i.description === item.description
             ? { ...i, quantity: i.quantity + (item.quantity || 1) }
             : i
         );
       }
-      // Se não existe, adiciona como novo item
       return [...prevItems, { ...item, quantity: item.quantity || 1 }];
     });
   };
 
-  const removeItem = (id: number) => {
-    setItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  const removeItem = (id: number, description?: string) => {
+    setItems((prevItems) =>
+      prevItems.filter(
+        (item) => !(item.id === id && item.description === description)
+      )
+    );
   };
 
   const updateQuantity = (id: number, quantity: number) => {
