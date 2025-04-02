@@ -8,80 +8,80 @@ export default function CartScreen() {
   const { items, removeItem, updateQuantity, total, clearCart } = useCart();
   const router = useRouter();
 
-  if (items.length === 0) {
+    if (items.length === 0) {
+      return (
+        <View style={styles.container}>
+          <Text style={styles.title}>Carrinho</Text>
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>Seu carrinho está vazio</Text>
+            <TouchableOpacity
+              style={styles.browseButton}
+              onPress={() => router.back()}
+            >
+              <Text style={styles.browseButtonText}>Voltar para o cardápio</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Carrinho</Text>
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>Seu carrinho está vazio</Text>
-          <TouchableOpacity
-            style={styles.browseButton}
-            onPress={() => router.back()}>
-            <Text style={styles.browseButtonText}>Voltar para o cardápio</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Carrinho</Text>
-      
-      <ScrollView style={styles.itemsContainer}>
-        {items.map((item) => (
-          <View key={item.id} style={styles.cartItem}>
-            <View style={styles.itemInfo}>
-              <Text style={styles.itemName}>{item.name}</Text>
-              <Text style={styles.itemPrice}>
-                R$ {(item.price * item.quantity).toFixed(2)}
-              </Text>
+  
+        <ScrollView style={styles.itemsContainer}>
+          {items.map((item, index) => (
+            <View key={`${item.id}-${index}`} style={styles.cartItem}>
+              <View style={styles.itemInfo}>
+                <Text style={styles.itemName}>{item.quantity}x {item.name}</Text>
+                {item.description && (
+                  <Text style={styles.itemDescription}>Obs: {item.description}</Text>
+                )}
+                <Text style={styles.itemPrice}>
+                  R$ {(item.price * item.quantity).toFixed(2)}
+                </Text>
+              </View>
+  
+              <View style={styles.itemActions}>
+                <TouchableOpacity
+                  style={styles.quantityButton}
+                  onPress={() => updateQuantity(item.id, item.quantity - 1)}
+                >
+                  <Minus size={16} color="#FF6B00" />
+                </TouchableOpacity>
+                <Text style={styles.quantityText}>{item.quantity}</Text>
+                <TouchableOpacity
+                  style={styles.quantityButton}
+                  onPress={() => updateQuantity(item.id, item.quantity + 1)}
+                >
+                  <Plus size={16} color="#FF6B00" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.removeButton}
+                  onPress={() => removeItem(item.id)}
+                >
+                  <Trash2 size={16} color="#FF3B30" />
+                </TouchableOpacity>
+              </View>
             </View>
-            
-            <View style={styles.itemActions}>
-              <TouchableOpacity
-                style={styles.quantityButton}
-                onPress={() => updateQuantity(item.id, item.quantity - 1)}>
-                <Minus size={16} color="#FF6B00" />
-              </TouchableOpacity>
-              
-              <Text style={styles.quantityText}>{item.quantity}</Text>
-              
-              <TouchableOpacity
-                style={styles.quantityButton}
-                onPress={() => updateQuantity(item.id, item.quantity + 1)}>
-                <Plus size={16} color="#FF6B00" />
-              </TouchableOpacity>
-              
-              <TouchableOpacity
-                style={styles.removeButton}
-                onPress={() => removeItem(item.id)}>
-                <Trash2 size={16} color="#FF3B30" />
-              </TouchableOpacity>
-            </View>
-          </View>
-        ))}
-      </ScrollView>
+          ))}
+        </ScrollView>
 
-      <View style={styles.footer}>
+        <View style={styles.footer}>
         <View style={styles.totalContainer}>
           <Text style={styles.totalLabel}>Total</Text>
           <Text style={styles.totalValue}>R$ {total.toFixed(2)}</Text>
         </View>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.clearButton}
-            onPress={clearCart}>
+          <TouchableOpacity style={styles.clearButton} onPress={clearCart}>
             <Text style={styles.clearButtonText}>Limpar</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             style={styles.checkoutButton}
             onPress={() => {
-              // Implementar checkout
               console.log('Checkout:', items);
-            }}>
+            }}
+          >
             <Text style={styles.checkoutButtonText}>Finalizar Pedido</Text>
           </TouchableOpacity>
         </View>
@@ -126,6 +126,11 @@ const styles = StyleSheet.create({
   },
   itemsContainer: {
     flex: 1,
+  },
+  itemDescription: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 2,
   },
   cartItem: {
     backgroundColor: '#FFF',
