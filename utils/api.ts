@@ -1,25 +1,14 @@
-import { useAuth } from '../contexts/auth';
+import axios from 'axios';
+import Constants from 'expo-constants';
 
-const API_URL = 'http://localhost:3000';
+// Usa o API_URL do app.json, com fallback pra localhost
+const API_URL = Constants.expoConfig?.extra?.apiUrl || 'http://localhost:3000';
 
-export async function apiCall(endpoint: string, options: RequestInit = {}) {
-  const { token } = useAuth();
-  
-  const headers = {
+const api = axios.create({
+  baseURL: API_URL,
+  headers: {
     'Content-Type': 'application/json',
-    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-    ...options.headers,
-  };
+  },
+});
 
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    ...options,
-    headers,
-  });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || 'Erro na requisição');
-  }
-
-  return response.json();
-}
+export default api;
