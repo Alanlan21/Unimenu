@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     padding: 16,
-    backgroundColor: '#FFF8EC',
+    backgroundColor: '#FFF',
     borderTopWidth: 1,
     borderTopColor: '#E5E5E5',
   },
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     flex: 1,
-    backgroundColor: '#FFF',
+    backgroundColor: '#FFF8EC',
     borderWidth: 1,
     borderColor: '#FF3B30',
     borderRadius: 25,
