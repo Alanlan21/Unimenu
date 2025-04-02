@@ -23,6 +23,7 @@ export default function HomePage() {
     async function fetchStores() {
       try {
         const response = await axios.get('http://192.168.2.100:3000/stores');
+        // const response = await axios.get('http://localhost:3000/stores');
         setStores(response.data);
       } catch (err) {
         setError('Erro ao carregar os estabelecimentos.');
