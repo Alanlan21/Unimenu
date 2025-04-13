@@ -137,13 +137,15 @@ export class OrderService {
 
   // Método para atualizar o pedido
   async update(id: number, updateData: Partial<Order>): Promise<Order> {
+    console.log(`Atualizando pedido ${id} com dados:`, updateData);
     const order = await this.orderRepository.findOne({ where: { id } });
     if (!order) {
-      throw new Error('Pedido não encontrado');
+      throw new NotFoundException(`Pedido com ID ${id} não encontrado`);
     }
     Object.assign(order, updateData);
-    await this.orderRepository.save(order);
-    return order;
+    const updatedOrder = await this.orderRepository.save(order);
+    console.log(`Pedido ${id} atualizado:`, updatedOrder);
+    return updatedOrder;
   }
 
   // Método para remover o pedido

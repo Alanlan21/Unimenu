@@ -8,4 +8,17 @@ export declare class StripeController {
     }): Promise<{
         client_secret: string;
     }>;
+    createCheckoutSession(body: {
+        items: {
+            name: string;
+            amount: number;
+            quantity: number;
+        }[];
+        orderId: number;
+        successUrl: string;
+        cancelUrl: string;
+    }): Promise<{
+        url: string;
+        sessionId: string;
+    }>;
 }

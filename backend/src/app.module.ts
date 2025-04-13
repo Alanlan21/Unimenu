@@ -14,6 +14,7 @@ import { StripeController } from './stripe/stripe.controller';
 import { StripeService } from './stripe/stripe.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ProductOrderModule } from './module/product-order.module';
+import { RedirectModule } from './redirect/redirect.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { ProductOrderModule } from './module/product-order.module';
     PaymentModule,
     StripeModule,
     ProductOrderModule,
+    RedirectModule,
   ],
   controllers: [PaymentMethodController, StripeController],
   providers: [StripeService],

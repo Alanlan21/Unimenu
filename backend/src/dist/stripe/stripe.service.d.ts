@@ -6,4 +6,12 @@ export declare class StripeService {
     createPaymentIntent(amount: number, currency: string): Promise<{
         client_secret: string;
     }>;
+    createCheckoutSession(items: {
+        name: string;
+        amount: number;
+        quantity: number;
+    }[], orderId: number, successUrl: string, cancelUrl: string): Promise<{
+        url: string;
+        sessionId: string;
+    }>;
 }

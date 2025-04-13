@@ -26,6 +26,7 @@ const stripe_controller_1 = require("./stripe/stripe.controller");
 const stripe_service_1 = require("./stripe/stripe.service");
 const config_1 = require("@nestjs/config");
 const product_order_module_1 = require("./module/product-order.module");
+const redirect_module_1 = require("./redirect/redirect.module");
 let AppModule = class AppModule {
     constructor(configService) {
         this.configService = configService;
@@ -76,6 +77,7 @@ exports.AppModule = AppModule = __decorate([
             payment_module_1.PaymentModule,
             stripe_module_1.StripeModule,
             product_order_module_1.ProductOrderModule,
+            redirect_module_1.RedirectModule,
         ],
         controllers: [payment_method_controller_1.PaymentMethodController, stripe_controller_1.StripeController],
         providers: [stripe_service_1.StripeService],

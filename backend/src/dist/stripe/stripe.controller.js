@@ -24,6 +24,11 @@ let StripeController = class StripeController {
         const paymentIntent = await this.stripeService.createPaymentIntent(amount, currency);
         return paymentIntent;
     }
+    async createCheckoutSession(body) {
+        const { items, orderId, successUrl, cancelUrl } = body;
+        const session = await this.stripeService.createCheckoutSession(items, orderId, successUrl, cancelUrl);
+        return session;
+    }
 };
 exports.StripeController = StripeController;
 __decorate([
@@ -33,6 +38,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], StripeController.prototype, "createPayment", null);
+__decorate([
+    (0, common_1.Post)('checkout'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], StripeController.prototype, "createCheckoutSession", null);
 exports.StripeController = StripeController = __decorate([
     (0, common_1.Controller)('pagamento'),
     __metadata("design:paramtypes", [stripe_service_1.StripeService])

@@ -112,13 +112,15 @@ let OrderService = class OrderService {
         return order;
     }
     async update(id, updateData) {
+        console.log(`Atualizando pedido ${id} com dados:`, updateData);
         const order = await this.orderRepository.findOne({ where: { id } });
         if (!order) {
-            throw new Error('Pedido não encontrado');
+            throw new common_1.NotFoundException(`Pedido com ID ${id} não encontrado`);
         }
         Object.assign(order, updateData);
-        await this.orderRepository.save(order);
-        return order;
+        const updatedOrder = await this.orderRepository.save(order);
+        console.log(`Pedido ${id} atualizado:`, updatedOrder);
+        return updatedOrder;
     }
     async remove(id) {
         await this.orderRepository.delete(id);

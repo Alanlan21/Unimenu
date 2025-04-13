@@ -143,7 +143,7 @@ export function StoreAccountPage() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-primary-dark/80 flex items-center">
+                    <label className="block text-sm font-medium text-primary-dark/80 items-center">
                       <Clock className="w-4 h-4 mr-1 text-primary" />
                       Horário de Funcionamento
                     </label>
