@@ -43,7 +43,7 @@ export default function Header({ searchText, setSearchText }: HeaderProps) {
             </TouchableOpacity>
           )}
         </View>
-        <TouchableOpacity style={styles.userIconButton}>
+        <TouchableOpacity style={styles.userIconButton} onPress={() => router.push('/perfil')}>
             <User size={24} color="#f97316" />
           </TouchableOpacity>
       </View>

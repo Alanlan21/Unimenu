@@ -124,9 +124,9 @@ const styles = StyleSheet.create({
     height: 50,
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 16,
     fontWeight: '600',
-    color: '#8B4513', 
+    color: '#FF6B00', 
   },
   emptyContainer: {
     flex: 1,
@@ -210,9 +210,11 @@ const styles = StyleSheet.create({
   },
   footer: {
     padding: 16,
-    backgroundColor: '#FFF',
-    borderTopWidth: 1,
-    borderTopColor: '#E5E5E5',
+    backgroundColor: '#FFEFCF',
+    borderTopWidth: 2,
+    borderTopColor: '#FEC68D',
+    borderBottomWidth: 2,
+    borderBottomColor: '#FEC68D',
   },
   totalContainer: {
     flexDirection: 'row',
@@ -235,7 +237,7 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     flex: 1,
-    backgroundColor: '#FFF8EC',
+    backgroundColor: '#FF3B30',
     borderWidth: 1,
     borderColor: '#FF3B30',
     borderRadius: 25,
@@ -243,7 +245,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   clearButtonText: {
-    color: '#FF3B30',
+    color: '#FFF8EC',
     fontSize: 16,
     fontWeight: '600',
   },

@@ -254,18 +254,11 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    backgroundColor: '#FFEFCF',
+    justifyContent: 'space-between', // Espaça a logo e o texto
+    padding: 10,
+    backgroundColor: '#FFEFCF', // Cor de fundo do header
     borderBottomWidth: 1,
     borderBottomColor: '#E5E5E5',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    zIndex: 10,
   },
   logo: {
     width: 50, 
