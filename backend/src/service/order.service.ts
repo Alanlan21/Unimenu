@@ -10,8 +10,16 @@ import { User } from '../entity/user.entity';
 
 @Injectable()
 export class OrderService {
-  findByUser(userId: number): Order[] | PromiseLike<Order[]> {
-    throw new Error('Method not implemented.');
+  async findByUser(userId: number): Promise<Order[]> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+    const orders = await this.orderRepository.find({
+      where: { user: { id: userId } },
+      relations: ['productOrders', 'productOrders.menuItem', 'user'],
+    });
+    return orders;
   }
   constructor(
     @InjectRepository(Order)
