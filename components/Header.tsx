@@ -49,7 +49,7 @@ export default function Header({ searchText, setSearchText }: HeaderProps) {
       </View>
       
       <View style={styles.bottomRow}>
-        <TouchableOpacity style={styles.ordersButton}>
+      <TouchableOpacity style={styles.cartButton} onPress={() => router.push('/orders')}>
           <Text style={styles.ordersText}>Histórico de pedidos</Text>
         </TouchableOpacity>
 

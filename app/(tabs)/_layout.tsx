@@ -63,6 +63,17 @@ export default function TabLayout() {
           href: null, // Remove a aba "stores/[id]" da barra de navegação
         }}
       />
+
+<Tabs.Screen
+        name="orders"
+        options={{
+          title: 'Pedidos',
+          tabBarIcon: ({ size, color }) => (
+            <Ionicons name="bag-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      
     </Tabs>
   );
 }
