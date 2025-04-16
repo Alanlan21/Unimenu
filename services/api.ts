@@ -1,6 +1,4 @@
-import { useAuth } from '../contexts/auth';
-
-const API_URL = 'http://localhost:3000';
+const API_URL = 'http://192.168.2.100:3000';
 
 export interface MenuItem {
   id: number;
@@ -39,57 +37,65 @@ export interface Order {
 
 export const api = {
   stores: {
-    getAll: () => apiCall('/stores'),
-    getOne: (id: number) => apiCall(`/stores/${id}`),
-    search: (query: string) => apiCall(`/stores/search?q=${encodeURIComponent(query)}`),
+    getAll: (options?: RequestInit) => apiCall('/stores', options),
+    getOne: (id: number, options?: RequestInit) => apiCall(`/stores/${id}`, options),
+    search: (query: string, options?: RequestInit) => apiCall(`/stores/search?q=${encodeURIComponent(query)}`, options),
   },
   
   menuItems: {
-    getByStore: (storeId: number) => apiCall(`/stores/${storeId}/menu-items`),
-    getOne: (id: number) => apiCall(`/items/${id}`),
+    getByStore: (storeId: number, options?: RequestInit) => apiCall(`/stores/${storeId}/menu-items`, options),
+    getOne: (id: number, options?: RequestInit) => apiCall(`/items/${id}`, options),
   },
   
   orders: {
-    create: (data: { items: Array<{ menuItemId: number; quantity: number }> }) => 
+    create: (data: { idCliente: number; order_date: string; status: string; order_number: number }, options?: RequestInit) => 
       apiCall('/orders', {
         method: 'POST',
         body: JSON.stringify(data),
+        ...options,
       }),
     
-    addItem: (orderId: number, menuItemId: number, quantity: number) =>
+    addItem: (orderId: number, items: Array<{ menuItemId: number; quantity: number }>, options?: RequestInit) =>
       apiCall(`/orders/${orderId}/product-orders`, {
         method: 'POST',
-        body: JSON.stringify({
-          items: [{ menuItemId, quantity }]
-        }),
+        body: JSON.stringify({ items }),
+        ...options,
       }),
       
-    getUserOrders: () => apiCall('/orders/user'),
+    getUserOrders: (options?: RequestInit) => apiCall('/orders/user', options),
     
-    getOne: (id: number) => apiCall(`/orders/${id}`),
+    getOne: (id: number, options?: RequestInit) => apiCall(`/orders/${id}`, options),
     
-    update: (id: number, data: Partial<Order>) =>
+    update: (id: number, data: Partial<Order>, options?: RequestInit) =>
       apiCall(`/orders/${id}`, {
-        method: 'PATCH',
+        method: 'PUT',
         body: JSON.stringify(data),
+        ...options,
       }),
   },
   
   auth: {
-    login: (email: string, password: string) =>
+    login: (email: string, password: string, options?: RequestInit) =>
       apiCall('/auth/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
+        ...options,
+      }),
+  },
+
+  pagamento: {
+    checkout: (data: { items: Array<{ name: string; amount: number; quantity: number }>, orderId: number, successUrl: string, cancelUrl: string }, options?: RequestInit) =>
+      apiCall('/pagamento/checkout', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        ...options,
       }),
   },
 };
 
 async function apiCall(endpoint: string, options: RequestInit = {}) {
-  const { token } = useAuth();
-  
   const headers = {
     'Content-Type': 'application/json',
-    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
     ...options.headers,
   };
 
@@ -105,3 +111,5 @@ async function apiCall(endpoint: string, options: RequestInit = {}) {
 
   return response.json();
 }
+
+export default api;

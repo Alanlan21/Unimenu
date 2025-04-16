@@ -94,9 +94,8 @@ export default function CartScreen() {
           <TouchableOpacity
             style={styles.checkoutButton}
             onPress={() => {
-              console.log('Checkout:', items);
-            }}
-          >
+              router.push({ pathname: '/checkout' });
+            }}>
             <Text style={styles.checkoutButtonText}>Finalizar Pedido</Text>
           </TouchableOpacity>
         </View>
