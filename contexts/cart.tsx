@@ -1,16 +1,17 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-interface CartItem {
+export interface CartItem {
   id: number;
   name: string;
   price: number;
   quantity: number;
+  description?: string;
 }
 
 interface CartContextType {
   items: CartItem[];
   addItem: (item: CartItem) => void;
-  removeItem: (id: number) => void;
+  removeItem: (id: number, description?: string) => void; // Ajustado para aceitar description
   updateQuantity: (id: number, quantity: number) => void;
   clearCart: () => void;
   total: number;
@@ -27,10 +28,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const addItem = (item: CartItem) => {
     setItems((prevItems) => {
-      const existingItem = prevItems.find(i => i.id === item.id);
+      const existingItem = prevItems.find(
+        (i) => i.id === item.id && i.description === item.description
+      );
       if (existingItem) {
-        return prevItems.map(i =>
-          i.id === item.id
+        return prevItems.map((i) =>
+          i.id === item.id && i.description === item.description
             ? { ...i, quantity: i.quantity + (item.quantity || 1) }
             : i
         );
@@ -39,15 +42,21 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const removeItem = (id: number) => {
-    setItems((prevItems) => prevItems.filter(item => item.id !== id));
+  const removeItem = (id: number, description?: string) => {
+    setItems((prevItems) =>
+      prevItems.filter(
+        (item) => !(item.id === id && item.description === description)
+      )
+    );
   };
 
   const updateQuantity = (id: number, quantity: number) => {
     setItems((prevItems) =>
-      prevItems.map(item =>
-        item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item
-      ).filter(item => item.quantity > 0)
+      prevItems
+        .map((item) =>
+          item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item
+        )
+        .filter((item) => item.quantity > 0)
     );
   };
 
