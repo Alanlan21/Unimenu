@@ -27,6 +27,13 @@
         <data android:scheme="myapp"/>
         <data android:scheme="com.meuapp.android"/>
         <data android:scheme="exp+unimenu-mobile"/>
+        <data android:scheme="unimenu"/>
+      </intent-filter>
+      <intent-filter data-generated="true">
+        <action android:name="android.intent.action.VIEW"/>
+        <data android:scheme="unimenu"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
   </application>

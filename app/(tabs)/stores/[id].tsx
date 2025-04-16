@@ -247,10 +247,7 @@ export default function StorePage() {
                     <Text style={styles.totalLabel}>Subtotal</Text>
                     <Text style={styles.totalValue}>R$ {total.toFixed(2)}</Text>
                   </View>
-                  <View style={styles.totalRow}>
-                    <Text style={styles.totalLabel}>Taxa de Serviço</Text>
-                    <Text style={styles.totalValue}>R$ 0.99</Text>
-                  </View>
+
                   <View style={styles.totalRow}>
                     <Text style={styles.totalLabel}>Total</Text>
                     <Text style={styles.totalValue}>R$ {(total + 0.99).toFixed(2)}</Text>

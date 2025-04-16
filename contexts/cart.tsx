@@ -13,9 +13,14 @@ interface CartContextType {
   addItem: (item: CartItem) => void;
   removeItem: (id: number, description?: string) => void; // Ajustado para aceitar description
   updateQuantity: (id: number, quantity: number) => void;
+  clearCart: () => void;
   total: number;
 }
 
+
+export const clearCart = () => {
+  setItems([]); // Implement the logic to clear the cart
+};
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
@@ -58,7 +63,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, total }}>
+    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, total, clearCart }}>
       {children}
     </CartContext.Provider>
   );
@@ -71,3 +76,7 @@ export const useCart = () => {
   }
   return context;
 };
+function setItems(arg0: never[]) {
+  throw new Error('Function not implemented.');
+}
+
