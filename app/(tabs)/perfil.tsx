@@ -105,9 +105,9 @@ const styles = StyleSheet.create({
     height: 50,
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 16,
     fontWeight: '600',
-    color: '#8B4513', // Cor marrom escura para o texto
+    color: '#FF6B00', // Cor marrom escura para o texto
   },
   welcomeContainer: {
     padding: 16,
