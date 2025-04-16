@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import axios from 'axios';
+import api from '../../utils/api'; // Usa o api centralizado
 import Header from '../../components/Header';
 import StoreCard from '../../components/StoreCard';
-import API_URL from './../../utils/api';
 
 interface Store {
   id: number;
@@ -22,8 +21,7 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchStores() {
       try {
-        const response = await axios.get('http://192.168.2.100:3000/stores');
-        // const response = await axios.get('http://localhost:3000/stores');
+        const response = await api.get('/stores'); // Usa o api centralizado
         setStores(response.data);
       } catch (err) {
         setError('Erro ao carregar os estabelecimentos.');
@@ -35,7 +33,6 @@ export default function HomePage() {
     fetchStores();
   }, []);
 
-  // Filtra as lojas com base no texto da busca
   const filteredStores = stores.filter(store =>
     store.name.toLowerCase().includes(searchText.toLowerCase())
   );
