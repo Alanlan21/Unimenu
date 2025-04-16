@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import api from '../../utils/api'; // Usa o api centralizado
 import Header from '../../components/Header';
 import StoreCard from '../../components/StoreCard';
+import axios from 'axios';
 
 interface Store {
   id: number;

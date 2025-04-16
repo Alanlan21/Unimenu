@@ -47,7 +47,7 @@
     "react-native-webview": "13.12.5",
 
     "expo-dev-client": "~5.0.14",
-    "react-native-svg": "15.8.0"
+    "react-native-svg": "15.8.0",
 
     "typescript": "^5.3.3"
 
@@ -67,7 +67,7 @@
   },
   "resolutions": {
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
 
     "typescript": "^5.8.2"
 
