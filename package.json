@@ -27,6 +27,7 @@
     "expo-image": "~2.0.6",
     "expo-linear-gradient": "^14.0.2",
     "expo-linking": "^7.0.5",
+
     "expo-router": "^4.0.20",
     "expo-splash-screen": "^0.29.21",
     "expo-status-bar": "^2.0.1",
@@ -49,8 +50,6 @@
 
     "react-native-svg": "15.8.0"
 
- 
-
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -68,6 +67,7 @@
   "resolutions": {
     "react": "18.3.1",
     "react-dom": "18.3.1",
+
 
     "typescript": "^5.8.2"
 

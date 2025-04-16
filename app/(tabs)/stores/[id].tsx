@@ -225,9 +225,9 @@ export default function StorePage() {
                   {items.map((item, index) => (
                     <View key={`${item.id}-${index}`} style={styles.cartItem}>
                       <Text style={styles.cartItemName}>{item.quantity}x {item.name}</Text>
-                      {item.description && (
+                      {/* {item.description && (
                         <Text style={styles.cartItemDescription}>Obs: {item.description}</Text>
-                      )}
+                      )} */}
                       <View style={styles.cartItemActions}>
                         <Text style={styles.cartItemPrice}>
                           R$ {(item.price * item.quantity).toFixed(2)}
