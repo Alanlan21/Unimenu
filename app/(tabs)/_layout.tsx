@@ -46,6 +46,14 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => <ShoppingCart size={size} color={color} />,
         }}
       />
+      
+      <Tabs.Screen
+        name="checkout"
+        options={{
+          href: null, // Remove a aba "Checkout" da barra de navegação
+        }}
+      />
+    
 
       <Tabs.Screen
         name="perfil"
@@ -63,6 +71,8 @@ export default function TabLayout() {
           href: null, // Remove a aba "stores/[id]" da barra de navegação
         }}
       />
+
+      
 
 <Tabs.Screen
         name="orders"

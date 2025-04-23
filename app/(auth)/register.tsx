@@ -87,7 +87,7 @@ export default function RegisterScreen() {
 
     try {
       await signUp(formData);
-      router.replace('/(tabs)');
+      router.replace('/(tabs)/dashboard');
     } catch (error) {
       setError('Erro ao realizar cadastro. Por favor, tente novamente.');
       shakeAnimation();
