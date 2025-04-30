@@ -1,4 +1,14 @@
-const API_URL = 'http://192.168.2.100:3000';
+import { Platform } from "react-native";
+import Constants from "expo-constants";
+
+const LOCAL_IP = "192.168.2.100";
+
+const fallbackURL =
+  Platform.OS === "android" || Platform.OS === "ios"
+    ? `http://${LOCAL_IP}:3000`
+    : "http://localhost:3000";
+
+const API_URL = Constants.expoConfig?.extra?.apiUrl || fallbackURL;
 
 export interface MenuItem {
   id: number;
@@ -37,56 +47,81 @@ export interface Order {
 
 export const api = {
   stores: {
-    getAll: (options?: RequestInit) => apiCall('/stores', options),
-    getOne: (id: number, options?: RequestInit) => apiCall(`/stores/${id}`, options),
-    search: (query: string, options?: RequestInit) => apiCall(`/stores/search?q=${encodeURIComponent(query)}`, options),
+    getAll: (options?: RequestInit) => apiCall("/stores", options),
+    getOne: (id: number, options?: RequestInit) =>
+      apiCall(`/stores/${id}`, options),
+    search: (query: string, options?: RequestInit) =>
+      apiCall(`/stores/search?q=${encodeURIComponent(query)}`, options),
   },
-  
+
   menuItems: {
-    getByStore: (storeId: number, options?: RequestInit) => apiCall(`/stores/${storeId}/menu-items`, options),
-    getOne: (id: number, options?: RequestInit) => apiCall(`/items/${id}`, options),
+    getByStore: (storeId: number, options?: RequestInit) =>
+      apiCall(`/stores/${storeId}/menu-items`, options),
+    getOne: (id: number, options?: RequestInit) =>
+      apiCall(`/items/${id}`, options),
   },
-  
+
   orders: {
-    create: (data: { idCliente: number; order_date: string; status: string; order_number: number }, options?: RequestInit) => 
-      apiCall('/orders', {
-        method: 'POST',
+    create: (
+      data: {
+        idCliente: number;
+        order_date: string;
+        status: string;
+        order_number: number;
+      },
+      options?: RequestInit
+    ) =>
+      apiCall("/orders", {
+        method: "POST",
         body: JSON.stringify(data),
         ...options,
       }),
-    
-    addItem: (orderId: number, items: Array<{ menuItemId: number; quantity: number }>, options?: RequestInit) =>
+
+    addItem: (
+      orderId: number,
+      items: Array<{ menuItemId: number; quantity: number }>,
+      options?: RequestInit
+    ) =>
       apiCall(`/orders/${orderId}/product-orders`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({ items }),
         ...options,
       }),
-      
-    getUserOrders: (options?: RequestInit) => apiCall('/orders/user', options),
-    
-    getOne: (id: number, options?: RequestInit) => apiCall(`/orders/${id}`, options),
-    
+
+    getUserOrders: (options?: RequestInit) => apiCall("/orders/user", options),
+
+    getOne: (id: number, options?: RequestInit) =>
+      apiCall(`/orders/${id}`, options),
+
     update: (id: number, data: Partial<Order>, options?: RequestInit) =>
       apiCall(`/orders/${id}`, {
-        method: 'PUT',
+        method: "PUT",
         body: JSON.stringify(data),
         ...options,
       }),
   },
-  
+
   auth: {
     login: (email: string, password: string, options?: RequestInit) =>
-      apiCall('/auth/login', {
-        method: 'POST',
+      apiCall("/auth/login", {
+        method: "POST",
         body: JSON.stringify({ email, password }),
         ...options,
       }),
   },
 
   pagamento: {
-    checkout: (data: { items: Array<{ name: string; amount: number; quantity: number }>, orderId: number, successUrl: string, cancelUrl: string }, options?: RequestInit) =>
-      apiCall('/pagamento/checkout', {
-        method: 'POST',
+    checkout: (
+      data: {
+        items: Array<{ name: string; amount: number; quantity: number }>;
+        orderId: number;
+        successUrl: string;
+        cancelUrl: string;
+      },
+      options?: RequestInit
+    ) =>
+      apiCall("/pagamento/checkout", {
+        method: "POST",
         body: JSON.stringify(data),
         ...options,
       }),
@@ -95,7 +130,7 @@ export const api = {
 
 async function apiCall(endpoint: string, options: RequestInit = {}) {
   const headers = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
     ...options.headers,
   };
 
@@ -106,7 +141,7 @@ async function apiCall(endpoint: string, options: RequestInit = {}) {
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || 'Erro na requisição');
+    throw new Error(error.message || "Erro na requisição");
   }
 
   return response.json();
