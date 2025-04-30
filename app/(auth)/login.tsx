@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,19 +9,19 @@ import {
   Platform,
   ScrollView,
   Animated,
-} from 'react-native';
-import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../../contexts/auth';
-import FormInput from '../../components/FormInput';
-import LoadingOverlay from '../../components/LoadingOverlay';
-import { validateLoginForm } from '../../utils/validations';
+} from "react-native";
+import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "../../contexts/auth";
+import FormInput from "../../components/FormInput";
+import LoadingOverlay from "../../components/LoadingOverlay";
+import { validateLoginForm } from "../../utils/validations";
 
 export default function LoginScreen() {
   const { signIn } = useAuth();
   const [credentials, setCredentials] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -57,7 +57,7 @@ export default function LoginScreen() {
   const validateForm = () => {
     const validationErrors = validateLoginForm(credentials);
     setErrors(validationErrors);
-    return !Object.values(validationErrors).some(error => error !== null);
+    return !Object.values(validationErrors).some((error) => error !== null);
   };
 
   const handleLogin = async () => {
@@ -73,7 +73,7 @@ export default function LoginScreen() {
       await signIn(credentials);
       // Remove o router.replace('/dashboard') aqui, porque o signIn já faz o redirecionamento
     } catch (error) {
-      setError('Erro ao fazer login. Verifique suas credenciais.');
+      setError("Erro ao fazer login. Verifique suas credenciais.");
       shakeAnimation();
     } finally {
       setLoading(false);
@@ -82,18 +82,21 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}>
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.logoContainer}>
           <Image
-            source={require('../../assets/images/unimenu-logo.png')}
+            source={require("../../assets/images/unimenu-logo.png")}
             style={styles.logo}
             resizeMode="contain"
           />
         </View>
 
-        <Animated.View style={[styles.formContainer, { transform: [{ translateX: shake }] }]}>
+        <Animated.View
+          style={[styles.formContainer, { transform: [{ translateX: shake }] }]}
+        >
           <Text style={styles.title}>Faça seu Login</Text>
 
           <View style={styles.inputContainer}>
@@ -102,9 +105,9 @@ export default function LoginScreen() {
               placeholder="Usuário, email ou matrícula"
               value={credentials.email}
               onChangeText={(text) => {
-                setCredentials(prev => ({ ...prev, email: text }));
+                setCredentials((prev) => ({ ...prev, email: text }));
                 setError(null);
-                setErrors(prev => ({ ...prev, email: null }));
+                setErrors((prev) => ({ ...prev, email: null }));
               }}
               autoCapitalize="none"
               keyboardType="email-address"
@@ -117,46 +120,46 @@ export default function LoginScreen() {
               placeholder="Senha"
               value={credentials.password}
               onChangeText={(text) => {
-                setCredentials(prev => ({ ...prev, password: text }));
+                setCredentials((prev) => ({ ...prev, password: text }));
                 setError(null);
-                setErrors(prev => ({ ...prev, password: null }));
+                setErrors((prev) => ({ ...prev, password: null }));
               }}
               secureTextEntry={!showPassword}
               error={errors.password}
               editable={!loading}
               rightElement={
-                <TouchableOpacity 
-                  onPress={() => setShowPassword(!showPassword)} 
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
                   style={styles.eyeIcon}
-                  disabled={loading}>
-                  <Ionicons 
-                    name={showPassword ? "eye-outline" : "eye-off-outline"} 
-                    size={20} 
-                    color={loading ? "#999" : "#666"} 
+                  disabled={loading}
+                >
+                  <Ionicons
+                    name={showPassword ? "eye-outline" : "eye-off-outline"}
+                    size={20}
+                    color={loading ? "#999" : "#666"}
                   />
                 </TouchableOpacity>
               }
             />
           </View>
 
-          <TouchableOpacity 
-            onPress={() => router.push('/')}
-            disabled={loading}>
-            <Text style={[styles.forgotPassword, loading && styles.disabledText]}>
+          <TouchableOpacity onPress={() => router.push("/")} disabled={loading}>
+            <Text
+              style={[styles.forgotPassword, loading && styles.disabledText]}
+            >
               Esqueci minha senha
             </Text>
           </TouchableOpacity>
 
-          {error && (
-            <Text style={styles.errorText}>{error}</Text>
-          )}
+          {error && <Text style={styles.errorText}>{error}</Text>}
 
           <TouchableOpacity
             style={[styles.loginButton, loading && styles.loginButtonDisabled]}
             onPress={handleLogin}
-            disabled={loading}>
+            disabled={loading}
+          >
             <Text style={styles.loginButtonText}>
-              {loading ? 'Entrando...' : 'Entrar'}
+              {loading ? "Entrando..." : "Entrar"}
             </Text>
           </TouchableOpacity>
 
@@ -166,28 +169,26 @@ export default function LoginScreen() {
             <View style={styles.dividerLine} />
           </View>
 
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.googleButton, loading && styles.buttonDisabled]}
-            disabled={loading}>
+            disabled={loading}
+          >
             <Image
-              source={{ uri: 'https://www.google.com/favicon.ico' }}
+              source={{ uri: "https://www.google.com/favicon.ico" }}
               style={styles.googleIcon}
             />
             <Text style={styles.googleButtonText}>Entrar com Google</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={[styles.staffButton, loading && styles.buttonDisabled]}
-            disabled={loading}>
-            <Text style={styles.staffButtonText}>Login para funcionários</Text>
-          </TouchableOpacity>
-
           <View style={styles.registerContainer}>
             <Text style={styles.registerText}>Não tem uma conta? </Text>
-            <TouchableOpacity 
-              onPress={() => router.push('/register')}
-              disabled={loading}>
-              <Text style={[styles.registerLink, loading && styles.disabledText]}>
+            <TouchableOpacity
+              onPress={() => router.push("/register")}
+              disabled={loading}
+            >
+              <Text
+                style={[styles.registerLink, loading && styles.disabledText]}
+              >
                 Cadastre-se
               </Text>
             </TouchableOpacity>
@@ -202,16 +203,16 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF5E6',
+    backgroundColor: "#FFF5E6",
   },
   scrollContent: {
     flexGrow: 1,
     padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   logoContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 40,
   },
   logo: {
@@ -219,43 +220,43 @@ const styles = StyleSheet.create({
     height: 120,
   },
   formContainer: {
-    width: '100%',
+    width: "100%",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FF6B00',
+    fontWeight: "bold",
+    color: "#FF6B00",
     marginBottom: 30,
-    textAlign: 'center',
+    textAlign: "center",
   },
   inputContainer: {
-    width: '100%',
+    width: "100%",
     gap: 16,
   },
   eyeIcon: {
     padding: 10,
   },
   forgotPassword: {
-    color: '#FF6B00',
-    textAlign: 'right',
+    color: "#FF6B00",
+    textAlign: "right",
     marginTop: 10,
     marginBottom: 20,
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
   },
   errorText: {
-    color: '#FF3B30',
-    textAlign: 'center',
+    color: "#FF3B30",
+    textAlign: "center",
     marginBottom: 20,
-    backgroundColor: 'rgba(255, 59, 48, 0.1)',
+    backgroundColor: "rgba(255, 59, 48, 0.1)",
     padding: 10,
     borderRadius: 8,
   },
   loginButton: {
-    backgroundColor: '#FF6B00',
+    backgroundColor: "#FF6B00",
     borderRadius: 25,
     paddingVertical: 15,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     marginBottom: 20,
   },
   loginButtonDisabled: {
@@ -265,33 +266,33 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   loginButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginVertical: 20,
-    width: '100%',
+    width: "100%",
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#E5E5E5',
+    backgroundColor: "#E5E5E5",
   },
   dividerText: {
-    color: '#666',
+    color: "#666",
     paddingHorizontal: 10,
   },
   googleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#4285F4',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#4285F4",
     borderRadius: 25,
     paddingVertical: 15,
-    width: '100%',
+    width: "100%",
     marginBottom: 10,
   },
   googleIcon: {
@@ -300,34 +301,34 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   googleButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   staffButton: {
-    backgroundColor: '#FF8534',
+    backgroundColor: "#FF8534",
     borderRadius: 25,
     paddingVertical: 15,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     marginBottom: 20,
   },
   staffButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   registerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginTop: 20,
   },
   registerText: {
-    color: '#666',
+    color: "#666",
   },
   registerLink: {
-    color: '#FF6B00',
-    fontWeight: 'bold',
+    color: "#FF6B00",
+    fontWeight: "bold",
   },
   disabledText: {
     opacity: 0.7,
