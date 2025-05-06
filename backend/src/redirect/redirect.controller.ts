@@ -109,7 +109,7 @@ export class RedirectController {
               <p>Seu pedido <strong>#${cleanOrderId}</strong> foi realizado com sucesso.</p>
               <p>Data: ${new Date().toLocaleDateString()}</p>
             </div>
-            <p class="instructions">Por favor, retorne ao app e clique em "Voltar ao dashboard" para continuar.</p>
+            <p class="instructions">Por favor, retorne ao app e clique em "Voltar ao dashboar" para continuar.</p>
           </div>
           <script>
             setTimeout(() => {

@@ -6,7 +6,7 @@ const cors_1 = require("cors");
 const app = (0, express_1.default)();
 const port = 5000;
 
-// Configurar o CORS para permitir apenas http://localhost:8081
+
 app.use((0, cors_1.default)({
   origin: 'http://localhost:8081', // Permite apenas essa origem
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
