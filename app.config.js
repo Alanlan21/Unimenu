@@ -51,6 +51,7 @@ module.exports = {
       },
       extra: {
         apiUrl: "http://192.168.2.100:3000"
+        // apiUrl: "http://192.168.1.20:3000"
       }
     }
 };

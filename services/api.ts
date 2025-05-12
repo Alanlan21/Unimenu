@@ -2,7 +2,7 @@ import { Platform } from "react-native";
 import Constants from "expo-constants";
 
 const LOCAL_IP = "192.168.2.100";
-
+// const LOCAL_IP = "192.168.1.20";
 const fallbackURL =
   Platform.OS === "android" || Platform.OS === "ios"
     ? `http://${LOCAL_IP}:3000`
@@ -64,7 +64,7 @@ export const api = {
   orders: {
     create: (
       data: {
-        idCliente: number;
+        user_id: number;
         order_date: string;
         status: string;
         order_number: number;

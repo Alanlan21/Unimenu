@@ -30,6 +30,7 @@ export default function CheckoutScreen() {
       router.replace("/(auth)/login");
       return;
     }
+    console.log("User ID no frontend:", user.id);
 
     if (items.length === 0) {
       Alert.alert("Erro", "Carrinho vazio. Adicione itens para continuar.");
@@ -44,7 +45,7 @@ export default function CheckoutScreen() {
 
         const orderResponse = await api.orders.create(
           {
-            idCliente: parseInt(user.id, 10),
+            user_id: parseInt(user.id, 10),
             order_date: new Date().toISOString(),
             status: "PENDING",
             order_number: Math.floor(Math.random() * 1000000),
@@ -77,11 +78,10 @@ export default function CheckoutScreen() {
           },
         ];
 
-
-        // const successUrl = `http://192.168.2.100:3000/redirect/success?order_id=${orderId}`;
-        // const cancelUrl = `http://192.168.2.100:3000/redirect/cancel?order_id=${orderId}`;
-        const successUrl = `http://192.168.1.20:3000/redirect/success?order_id=${orderId}`;
-        const cancelUrl = `http://192.168.1.20:3000/redirect/cancel?order_id=${orderId}`;
+        const successUrl = `http://192.168.2.100:3000/redirect/success?order_id=${orderId}`;
+        const cancelUrl = `http://192.168.2.100:3000/redirect/cancel?order_id=${orderId}`;
+        // const successUrl = `http://192.168.1.20:3000/redirect/success?order_id=${orderId}`;
+        // const cancelUrl = `http://192.168.1.20:3000/redirect/cancel?order_id=${orderId}`;
 
         const checkoutResponse = await api.pagamento.checkout(
           {
