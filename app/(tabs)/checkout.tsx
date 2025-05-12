@@ -17,7 +17,7 @@ import { api } from "../../services/api";
 export default function CheckoutScreen() {
   const router = useRouter();
   const { total } = useLocalSearchParams();
-  const { items } = useCart();
+  const { items, taxa } = useCart();
   const { user, token } = useAuth();
   const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<number | null>(null);
@@ -64,14 +64,23 @@ export default function CheckoutScreen() {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const itemsForStripe = items.map((item) => ({
-          name: item.name,
-          amount: Math.round(item.price * 100),
-          quantity: item.quantity,
-        }));
+        const itemsForStripe = [
+          ...items.map((item) => ({
+            name: item.name,
+            amount: Math.round(item.price * 100),
+            quantity: item.quantity,
+          })),
+          {
+            name: "Taxa do app",
+            amount: Math.round(taxa * 100),
+            quantity: 1,
+          },
+        ];
+
 
         const successUrl = `http://192.168.2.100:3000/redirect/success?order_id=${orderId}`;
         const cancelUrl = `http://192.168.2.100:3000/redirect/cancel?order_id=${orderId}`;
+
 
         const checkoutResponse = await api.pagamento.checkout(
           {
