@@ -46,7 +46,7 @@ export default function CheckoutScreen() {
           {
             idCliente: parseInt(user.id, 10),
             order_date: new Date().toISOString(),
-            status: "pending",
+            status: "PENDING",
             order_number: Math.floor(Math.random() * 1000000),
           },
           { headers: { Authorization: `Bearer ${token}` } }
@@ -78,9 +78,10 @@ export default function CheckoutScreen() {
         ];
 
 
-        const successUrl = `http://192.168.2.100:3000/redirect/success?order_id=${orderId}`;
-        const cancelUrl = `http://192.168.2.100:3000/redirect/cancel?order_id=${orderId}`;
-
+        // const successUrl = `http://192.168.2.100:3000/redirect/success?order_id=${orderId}`;
+        // const cancelUrl = `http://192.168.2.100:3000/redirect/cancel?order_id=${orderId}`;
+        const successUrl = `http://192.168.1.20:3000/redirect/success?order_id=${orderId}`;
+        const cancelUrl = `http://192.168.1.20:3000/redirect/cancel?order_id=${orderId}`;
 
         const checkoutResponse = await api.pagamento.checkout(
           {
@@ -100,6 +101,7 @@ export default function CheckoutScreen() {
         setLoading(false);
       }
     };
+
 
     createOrderAndCheckout();
   }, [user, items, router, token]);
