@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { Search, User, ShoppingCart, X } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
+import { useCart } from '@/contexts/cart';
 
 // Definindo o tipo das props do Header
 interface HeaderProps {
@@ -11,6 +12,7 @@ interface HeaderProps {
 
 export default function Header({ searchText, setSearchText }: HeaderProps) {
   const router = useRouter();
+    const {subtotal, items} = useCart();
   const clearSearch = () => {
     setSearchText('');
   };
@@ -55,10 +57,12 @@ export default function Header({ searchText, setSearchText }: HeaderProps) {
 
           <TouchableOpacity style={styles.cartButton} onPress={() => router.push('/cart')}>
           <View style={styles.cartContainer}>
-          <Text style={styles.cartTotal}>R$ 00,00</Text>
+          <Text style={styles.cartTotal}>R$ {subtotal.toFixed(2)}</Text>
+
+
             <ShoppingCart size={24} color="#f97316" />
             <View style={styles.cartBadge}>
-              <Text style={styles.cartBadgeText}>0</Text>
+              <Text style={styles.cartBadgeText}>{items.length}</Text>
             </View>
             </View>
           </TouchableOpacity>

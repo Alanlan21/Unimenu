@@ -298,7 +298,7 @@ export default function StorePage() {
               <Text style={styles.cartBadgeText}>{items.length}</Text>
             </View>
           )}
-          <Text style={styles.cartTotal}>R$ {total.toFixed(2)}</Text>
+          <Text style={styles.cartTotal}>R$ {subtotal.toFixed(2)}</Text>
         </TouchableOpacity>
       </View>
 
