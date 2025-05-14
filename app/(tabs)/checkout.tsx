@@ -17,7 +17,7 @@ import { api } from "../../services/api";
 export default function CheckoutScreen() {
   const router = useRouter();
   const { total } = useLocalSearchParams();
-  const { items } = useCart();
+  const { items, taxa } = useCart();
   const { user, token } = useAuth();
   const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<number | null>(null);
@@ -30,6 +30,7 @@ export default function CheckoutScreen() {
       router.replace("/(auth)/login");
       return;
     }
+    console.log("User ID no frontend:", user.id);
 
     if (items.length === 0) {
       Alert.alert("Erro", "Carrinho vazio. Adicione itens para continuar.");
@@ -44,9 +45,9 @@ export default function CheckoutScreen() {
 
         const orderResponse = await api.orders.create(
           {
-            idCliente: parseInt(user.id, 10),
+            user_id: parseInt(user.id, 10),
             order_date: new Date().toISOString(),
-            status: "pending",
+            status: "PENDING",
             order_number: Math.floor(Math.random() * 1000000),
           },
           { headers: { Authorization: `Bearer ${token}` } }
@@ -64,14 +65,24 @@ export default function CheckoutScreen() {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const itemsForStripe = items.map((item) => ({
-          name: item.name,
-          amount: Math.round(item.price * 100),
-          quantity: item.quantity,
-        }));
+        const itemsForStripe = [
+          ...items.map((item) => ({
+            name: item.name,
+            amount: Math.round(item.price * 100),
+            quantity: item.quantity,
+          })),
+          {
+            name: "Taxa do app",
+            amount: Math.round(taxa * 100),
+            quantity: 1,
+          },
+        ];
+
 
         const successUrl = `http://192.168.2.100:3000/redirect/success?order_id=${orderId}`;
         const cancelUrl = `http://192.168.2.100:3000/redirect/cancel?order_id=${orderId}`;
+        //const successUrl = `http://192.168.1.20:3000/redirect/success?order_id=${orderId}`;
+        //const cancelUrl = `http://192.168.1.20:3000/redirect/cancel?order_id=${orderId}`;
 
         const checkoutResponse = await api.pagamento.checkout(
           {
@@ -91,6 +102,7 @@ export default function CheckoutScreen() {
         setLoading(false);
       }
     };
+
 
     createOrderAndCheckout();
   }, [user, items, router, token]);

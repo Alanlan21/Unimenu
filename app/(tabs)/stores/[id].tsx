@@ -31,7 +31,7 @@ interface CartItem {
 
 export default function StorePage() {
   const { id } = useLocalSearchParams();
-  const { addItem, items, removeItem, updateQuantity, total } = useCart();
+  const { addItem, items, removeItem, updateQuantity, total, subtotal, taxa} = useCart();
   const { token } = useAuth();
   const router = useRouter();
   const [store, setStore] = useState<Store | null>(null);
@@ -245,12 +245,17 @@ export default function StorePage() {
                 <View style={styles.modalFooter}>
                   <View style={styles.totalRow}>
                     <Text style={styles.totalLabel}>Subtotal</Text>
-                    <Text style={styles.totalValue}>R$ {total.toFixed(2)}</Text>
+                    <Text style={styles.totalValue}>R$ {subtotal.toFixed(2)}</Text>
+                  </View>
+
+                  <View style={styles.totalRow}>
+                    <Text style={styles.totalLabel}>Taxa</Text>
+                    <Text style={styles.totalValue}>R$ {taxa.toFixed(2)}</Text>
                   </View>
 
                   <View style={styles.totalRow}>
                     <Text style={styles.totalLabel}>Total</Text>
-                    <Text style={styles.totalValue}>R$ {(total + 0.99).toFixed(2)}</Text>
+                    <Text style={styles.totalValue}>R$ {(total).toFixed(2)}</Text>
                   </View>
                   <TouchableOpacity
                     style={styles.checkoutButton}
@@ -293,7 +298,7 @@ export default function StorePage() {
               <Text style={styles.cartBadgeText}>{items.length}</Text>
             </View>
           )}
-          <Text style={styles.cartTotal}>R$ {total.toFixed(2)}</Text>
+          <Text style={styles.cartTotal}>R$ {subtotal.toFixed(2)}</Text>
         </TouchableOpacity>
       </View>
 

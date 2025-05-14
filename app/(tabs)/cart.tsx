@@ -5,18 +5,18 @@ import { useCart } from '../../contexts/cart';
 import { useRouter } from 'expo-router';
 
 export default function CartScreen() {
-  const { items, removeItem, updateQuantity, total, clearCart } = useCart();
+  const { items, removeItem, updateQuantity, total, subtotal, taxa, clearCart } = useCart();
   const router = useRouter();
 
   if (items.length === 0) {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-         <Image
-                   source={require('@/assets/images/unimenu-logo.png')} 
-                   style={styles.logo}
-                   resizeMode="contain"
-                 />
+          <Image
+            source={require('@/assets/images/unimenu-logo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
           <Text style={styles.headerTitle}>Carrinho</Text>
         </View>
         <View style={styles.emptyContainer}>
@@ -35,11 +35,11 @@ export default function CartScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-      <Image
-                   source={require('@/assets/images/unimenu-logo.png')} 
-                   style={styles.logo}
-                   resizeMode="contain"
-                 />
+        <Image
+          source={require('@/assets/images/unimenu-logo.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
         <Text style={styles.headerTitle}>Carrinho</Text>
       </View>
 
@@ -81,7 +81,23 @@ export default function CartScreen() {
         ))}
       </ScrollView>
 
+      {/* <View style={styles.footer}>
+        <View style={styles.totalContainer}>
+          <Text style={styles.totalLabel}>Total</Text>
+          <Text style={styles.totalValue}>R$ {total.toFixed(2)}</Text>
+        </View> */}
+
       <View style={styles.footer}>
+        <View style={styles.totalContainer}>
+          <Text style={styles.totalLabel}>Subtotal</Text>
+          <Text style={styles.totalValue}>R$ {subtotal.toFixed(2)}</Text>
+        </View>        
+        
+        <View style={styles.totalContainer}>
+          <Text style={styles.totalLabel}>Taxa</Text>
+          <Text style={styles.totalValue}>R$ {taxa.toFixed(2)}</Text>
+        </View>
+
         <View style={styles.totalContainer}>
           <Text style={styles.totalLabel}>Total</Text>
           <Text style={styles.totalValue}>R$ {total.toFixed(2)}</Text>
@@ -119,13 +135,13 @@ const styles = StyleSheet.create({
     borderBottomColor: '#E5E5E5',
   },
   logo: {
-    width: 50, 
+    width: 50,
     height: 50,
   },
   headerTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FF6B00', 
+    color: '#FF6B00',
   },
   emptyContainer: {
     flex: 1,
