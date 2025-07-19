@@ -26,7 +26,7 @@ let StripeController = class StripeController {
     }
     async createCheckoutSession(body) {
         const { items, orderId, successUrl, cancelUrl } = body;
-        const session = await this.stripeService.createCheckoutSession(items, orderId, successUrl, cancelUrl);
+        const session = await this.stripeService.createCheckoutSession(items, orderId);
         return session;
     }
 };

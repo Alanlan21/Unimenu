@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState, useEffect } from 'react';
-import Axios from 'axios';
-import Header from '../components/Header';
-import { User, Store, Clock, Phone, Mail } from 'lucide-react';
+import { useState, useEffect } from "react";
+import Axios from "axios";
+import Header from "../components/Header";
+import { User, Store, Clock, Phone, Mail } from "lucide-react";
 
 export function StoreAccountPage() {
   const [owner, setOwner] = useState(null);
@@ -11,23 +11,26 @@ export function StoreAccountPage() {
   const [isEditing, setIsEditing] = useState(false);
 
   // Estados para os campos editáveis
-  const [ownerName, setOwnerName] = useState('');
-  const [ownerEmail, setOwnerEmail] = useState('');
-  const [storeName, setStoreName] = useState('');
-  const [storeHours, setStoreHours] = useState('');
-  const [storePhone, setStorePhone] = useState('');
-  const [storeEmail, setStoreEmail] = useState('');
+  const [ownerName, setOwnerName] = useState("");
+  const [ownerEmail, setOwnerEmail] = useState("");
+  const [storeName, setStoreName] = useState("");
+  const [storeHours, setStoreHours] = useState("");
+  const [storePhone, setStorePhone] = useState("");
+  const [storeEmail, setStoreEmail] = useState("");
 
   useEffect(() => {
     const fetchAccountDetails = async () => {
       try {
-        const storeId = localStorage.getItem('storeId');
-        const response = await Axios.get(`http://localhost:3000/owners/account/${storeId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-    
+        const storeId = localStorage.getItem("storeId");
+        const response = await Axios.get(
+          `http://192.168.2.100:3000/owners/account/${storeId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
         setOwner(response.data.ownerName);
         setOwner(response.data.ownerEmail);
         setStore(response.data);
@@ -38,12 +41,11 @@ export function StoreAccountPage() {
         setStorePhone(response.data.storePhone);
         setStoreEmail(response.data.storeEmail);
       } catch (error) {
-        console.error('Erro ao buscar detalhes da conta:', error);
+        console.error("Erro ao buscar detalhes da conta:", error);
       } finally {
         setLoading(false);
       }
     };
-    
 
     fetchAccountDetails();
   }, []);
@@ -55,9 +57,9 @@ export function StoreAccountPage() {
   // Função para salvar as alterações no backend
   const handleSaveChanges = async () => {
     try {
-      const storeId = localStorage.getItem('storeId');
+      const storeId = localStorage.getItem("storeId");
       await Axios.patch(
-        `http://localhost:3000/owners/account/${storeId}`,
+        `http://192.168.2.100:3000/owners/account/${storeId}`,
         {
           ownerName: ownerName,
           ownerEmail: ownerEmail,
@@ -68,16 +70,15 @@ export function StoreAccountPage() {
         },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
       setIsEditing(false);
     } catch (error) {
-      console.error('Erro ao salvar as alterações:', error);
+      console.error("Erro ao salvar as alterações:", error);
     }
   };
-  
 
   if (loading) {
     return <div>Carregando...</div>;
@@ -85,10 +86,12 @@ export function StoreAccountPage() {
 
   return (
     <div className="min-h-screen bg-primary-light/10">
-      <Header/>
+      <Header />
       <main className="max-w-3xl mx-auto px-6 py-8">
         <div className="bg-primary-light/20 rounded-lg shadow-card p-6">
-          <h1 className="text-2xl font-bold text-primary-dark mb-6">Minha Conta</h1>
+          <h1 className="text-2xl font-bold text-primary-dark mb-6">
+            Minha Conta
+          </h1>
 
           <div className="space-y-6">
             {/* Informações Pessoais */}
@@ -99,18 +102,22 @@ export function StoreAccountPage() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-primary-dark/80">Nome</label>
+                  <label className="block text-sm font-medium text-primary-dark/80">
+                    Nome
+                  </label>
                   <input
                     type="text"
                     className="mt-1 block w-full rounded-md border-primary/20 bg-primary-light/20
                              shadow-sm focus:border-primary focus:ring focus:ring-primary/20"
                     value={ownerName}
-                    onChange={(e) => setOwnerName(e.target.value)} 
+                    onChange={(e) => setOwnerName(e.target.value)}
                     disabled={!isEditing}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-primary-dark/80">Email</label>
+                  <label className="block text-sm font-medium text-primary-dark/80">
+                    Email
+                  </label>
                   <input
                     type="email"
                     className="mt-1 block w-full rounded-md border-primary/20 bg-primary-light/20
@@ -131,13 +138,15 @@ export function StoreAccountPage() {
               </h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-primary-dark/80">Nome do Estabelecimento</label>
+                  <label className="block text-sm font-medium text-primary-dark/80">
+                    Nome do Estabelecimento
+                  </label>
                   <input
                     type="text"
                     className="mt-1 block w-full rounded-md border-primary/20 bg-primary-light/20
                              shadow-sm focus:border-primary focus:ring focus:ring-primary/20"
                     value={storeName}
-                    onChange={(e) => setStoreName(e.target.value)} 
+                    onChange={(e) => setStoreName(e.target.value)}
                     disabled={!isEditing}
                   />
                 </div>
@@ -192,7 +201,8 @@ export function StoreAccountPage() {
               {isEditing ? (
                 <button
                   onClick={handleSaveChanges}
-                  className="w-full bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 hover:shadow-md hover:scale-105 transition-all duration-200">                
+                  className="w-full bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 hover:shadow-md hover:scale-105 transition-all duration-200"
+                >
                   Salvar Alterações
                 </button>
               ) : (
@@ -210,6 +220,3 @@ export function StoreAccountPage() {
     </div>
   );
 }
-
-
-

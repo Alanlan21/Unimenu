@@ -21,8 +21,16 @@ const menuItem_entity_1 = require("../entity/menuItem.entity");
 const product_order_entity_1 = require("../entity/product-order.entity");
 const user_entity_1 = require("../entity/user.entity");
 let OrderService = class OrderService {
-    findByUser(userId) {
-        throw new Error('Method not implemented.');
+    async findByUser(userId) {
+        const user = await this.userRepository.findOne({ where: { id: userId } });
+        if (!user) {
+            throw new common_1.NotFoundException(`User with ID ${userId} not found`);
+        }
+        const orders = await this.orderRepository.find({
+            where: { user: { id: userId } },
+            relations: ['productOrders', 'productOrders.menuItem', 'user'],
+        });
+        return orders;
     }
     constructor(orderRepository, menuItemRepository, productOrderRepository, userRepository) {
         this.orderRepository = orderRepository;

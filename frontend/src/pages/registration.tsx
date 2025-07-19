@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  User,
-  Lock,
-  Mail,
-  Phone,
-  Calendar,
-  UserCircle,
-} from "lucide-react";
+import { User, Lock, Mail, Phone, Calendar, UserCircle } from "lucide-react";
 
 export default function Register() {
   // Estado para armazenar os dados do formulário
@@ -42,13 +35,16 @@ export default function Register() {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:3000/users/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "http://http://192.168.2.100:3000/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Erro ao realizar cadastro");
@@ -86,8 +82,9 @@ export default function Register() {
             Entre com sua conta para aproveitar todos os recursos.
           </p>
           <button
-          onClick={() => (window.location.href = "/login")} 
-          className="w-full mb-6 px-6 py-3 border-2 border-[#FF6B00] text-[#FF6B00] rounded-full hover:bg-[#FF6B00] hover:text-white transition-colors">
+            onClick={() => (window.location.href = "/login")}
+            className="w-full mb-6 px-6 py-3 border-2 border-[#FF6B00] text-[#FF6B00] rounded-full hover:bg-[#FF6B00] hover:text-white transition-colors"
+          >
             Fazer Login
           </button>
           <div className="text-center">
@@ -269,5 +266,4 @@ export default function Register() {
       </div>
     </div>
   );
-
 }

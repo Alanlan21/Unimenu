@@ -16,7 +16,7 @@ const stripe_1 = require("stripe");
 let StripeService = class StripeService {
     constructor(configService) {
         this.configService = configService;
-        const secretKey = 'sk_test_51Q5UHjJvaS5rJye8xIac6JL2nGPKabVck3E3MSUS0NzM9VAcALxNgDNilvt7vlYYI51vXe04oP0PMusCMGdJzTwA00UM9QR7KT';
+        const secretKey = process.env.STRIPE_SECRET_KEY || this.configService.get('STRIPE_SECRET_KEY');
         if (!secretKey) {
             throw new Error('A chave secreta do Stripe não está definida.');
         }
@@ -33,7 +33,7 @@ let StripeService = class StripeService {
             client_secret: paymentIntent.client_secret,
         };
     }
-    async createCheckoutSession(items, orderId, successUrl, cancelUrl) {
+    async createCheckoutSession(items, orderId) {
         try {
             for (const item of items) {
                 if (!item.name || typeof item.name !== 'string') {
@@ -46,6 +46,9 @@ let StripeService = class StripeService {
                     throw new Error(`Quantidade do item "${item.name}" é inválida. Deve ser maior que 0.`);
                 }
             }
+            const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8081';
+            const successUrl = `${frontendUrl}/redirect/success`;
+            const cancelUrl = `${frontendUrl}/redirect/cancel`;
             console.log('Criando Checkout Session com URLs:', { successUrl, cancelUrl });
             const session = await this.stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
@@ -65,12 +68,6 @@ let StripeService = class StripeService {
                 metadata: {
                     order_id: orderId.toString(),
                 },
-            });
-            console.log('Checkout Session criada:', {
-                sessionId: session.id,
-                success_url: session.success_url,
-                cancel_url: session.cancel_url,
-                url: session.url,
             });
             return {
                 url: session.url,

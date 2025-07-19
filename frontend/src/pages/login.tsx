@@ -25,16 +25,19 @@ export default function Login() {
       );
 
       // Envia os dados para seu backend
-      const response = await fetch("http://localhost:3000/users/google-login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token: tokenResponse.access_token,
-          userData: userInfo.data,
-        }),
-      });
+      const response = await fetch(
+        "http://192.168.2.100:3000/users/google-login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: tokenResponse.access_token,
+            userData: userInfo.data,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Erro na autenticação com Google");
@@ -72,7 +75,7 @@ export default function Login() {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:3000/users/login", {
+      const response = await fetch("http://192.168.2.100:3000/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

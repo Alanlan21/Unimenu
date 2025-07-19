@@ -9,7 +9,7 @@ export declare class OrderService {
     private menuItemRepository;
     private productOrderRepository;
     private userRepository;
-    findByUser(userId: number): Order[] | PromiseLike<Order[]>;
+    findByUser(userId: number): Promise<Order[]>;
     constructor(orderRepository: Repository<Order>, menuItemRepository: Repository<MenuItem>, productOrderRepository: Repository<ProductOrder>, userRepository: Repository<User>);
     addProductOrders(orderId: number, items: Array<{
         menuItemId: number;

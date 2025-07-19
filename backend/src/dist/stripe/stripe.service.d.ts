@@ -10,7 +10,7 @@ export declare class StripeService {
         name: string;
         amount: number;
         quantity: number;
-    }[], orderId: number, successUrl: string, cancelUrl: string): Promise<{
+    }[], orderId: number): Promise<{
         url: string;
         sessionId: string;
     }>;

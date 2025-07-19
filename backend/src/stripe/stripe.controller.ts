@@ -29,8 +29,6 @@ export class StripeController {
         const session = await this.stripeService.createCheckoutSession(
             items,
             orderId,
-            successUrl,
-            cancelUrl
         );
         return session; // Retorna { url, sessionId }
     }

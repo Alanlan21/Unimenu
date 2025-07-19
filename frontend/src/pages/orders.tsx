@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Header from "../components/Header";
 import { OrderCard } from "../components/orders/OrderCard";
 import { OrderDetailsModal } from "../components/orders/OrderDetailsModal";
