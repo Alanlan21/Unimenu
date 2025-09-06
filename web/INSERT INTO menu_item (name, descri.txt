@@ -1,0 +1,12 @@
+INSERT INTO menu_item (name, description, price, category) VALUES
+('Kalzone Frango Catupiry', 'Frango desfiado, catupiry, milho e oregano', 11.0, 'Destaques'),
+('Kalzone de Brócolis', 'Brócolis, queijo mussarela, tomate e requeijão', 8.9, 'Destaques'),
+('Frango cheddar e bacon', 'Frango, cheddar, bacon e oregano', 12.9, 'Destaques'),
+('Kalzone Calabresa', 'Calabresa, mussarela, cebola e oregano', 11.9, 'Tradicionais'),
+('Kalzone Magherita', 'manjericão, tomate e queijo mussarela', 11.9, 'Tradicionais'),
+('Morango SEM NOÇÃO', 'sorvete de baunilha com morango, banana e leite', 13.9, 'Especiais'),
+('Maracujá IRADO', 'abacaxi com suco de laranja, maracujá e leite', 13.9, 'Especiais'),
+('Kalzone Chocolate', 'Chocolate ao leite e chocolate branco', 8.9, 'Doces'),
+('Kalzone com nutella', '', 8.9, 'Doces');
+
+insert into payment_method (id, name) values (1, 'Visa Credit'), (2, 'Mastercard Credit'), (3, 'Pix')
