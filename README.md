@@ -1,10 +1,31 @@
 
-# 🍽️ UniMenu – Mobile Food Ordering App
+# 🍽️ UniMenu – Unified Food Ordering System
 
 ![Expo](https://img.shields.io/badge/Expo-5.0.14-blue?logo=expo)
 ![React Native](https://img.shields.io/badge/React_Native-0.76.7-blue?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)
+![NestJS](https://img.shields.io/badge/NestJS-10.x-red?logo=nestjs)
 ![Status](https://img.shields.io/badge/Status-In%20Progress-yellow)
+
+**UniMenu** is a full-stack food ordering system built for canteens and restaurants at UNIFOR university.  
+This repository is structured with **separate branches** for each domain (backend, web, mobile).
+
+> 📌 You're currently on the `main` branch — documentation only.
+
+---
+
+## 📁 Branches Overview
+
+| Branch     | Description                              |
+|------------|------------------------------------------|
+| `mobile`   | Mobile app using React Native + Expo     |
+| `web`      | Web frontend using React + Vite + Tailwind |
+| `backend`  | API built with NestJS + MySQL + JWT + Stripe |
+
+To work on a specific part of the system, switch to the corresponding branch:
+
+```bash
+git checkout backend  # or web, or mobile
 
 ## 🧾 Technical Overview
 
@@ -102,7 +123,6 @@ dashboard → profile / orders
 
 ---
 
-**Made with 💛 by passionate student developers.**
 
 
 ## Project Installation and Setup
